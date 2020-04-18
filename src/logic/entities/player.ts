@@ -10,4 +10,9 @@ export function createPlayer(id: EntityId, pos: Vec2, components: Components) {
     currentAnimation: "walk-south",
     frame: 0,
   });
+  components.agility.set(id, {
+    sneakSpeed: 1,
+    walkSpeed: 2.5,
+    runSpeed: 2.5,
+  });
 }

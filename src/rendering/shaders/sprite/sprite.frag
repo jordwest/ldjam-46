@@ -1,4 +1,4 @@
-precision mediump float;
+precision highp float;
 
 uniform sampler2D spriteTexture;
 varying vec2 v_texCoord;

@@ -18,4 +18,17 @@ export namespace Vec2 {
     x: v.x / scalar,
     y: v.y / scalar,
   });
+
+  export const multScalar = (v: Vec2, scalar: number) => ({
+    x: v.x * scalar,
+    y: v.y * scalar,
+  });
+  export const add = (a: Vec2, b: Vec2): Vec2 => ({
+    x: a.x + b.x,
+    y: a.y + b.y,
+  });
+  export const subtract = (a: Vec2, b: Vec2): Vec2 => ({
+    x: a.x - b.x,
+    y: a.y - b.y,
+  });
 }

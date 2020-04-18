@@ -18,6 +18,7 @@ export function init(renderState: RenderState): GameState {
   const components: Components = {
     position: new Map(),
     sprite: new Map(),
+    agility: new Map(),
   };
 
   const startLocation = { x: 30, y: 30 };
@@ -29,7 +30,12 @@ export function init(renderState: RenderState): GameState {
     cameraPosition: { ...startLocation },
     virtualScreenSize: VIRTUAL_SCREEN_SIZE,
     components,
-    nextEntityId: 0 as EntityId,
+    inputs: {
+      moveUp: false,
+      moveLeft: false,
+      moveDown: false,
+      moveRight: false,
+    },
     entities: {
       ...entities,
       player,

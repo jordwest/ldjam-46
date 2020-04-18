@@ -1,7 +1,6 @@
 import { GameState } from "~state/state";
 import { SpriteProgram } from "~rendering/shaders/sprite/sprite";
 import { Coords } from "~base/coords";
-import { Vec2 } from "~base/vec2";
 
 export function renderSprites(state: GameState) {
   let sprites: SpriteProgram.SpriteInstance[] = [];

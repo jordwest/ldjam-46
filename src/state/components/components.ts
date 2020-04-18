@@ -8,7 +8,14 @@ export type SpriteState = {
   frame: number;
 };
 
+export type Agility = {
+  sneakSpeed: number;
+  walkSpeed: number;
+  runSpeed: number;
+};
+
 export type Components = {
   position: Map<EntityId, Vec2>;
   sprite: Map<EntityId, SpriteState>;
+  agility: Map<EntityId, Agility>;
 };

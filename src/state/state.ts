@@ -3,6 +3,13 @@ import { Components } from "./components/components";
 import { RenderState } from "~rendering/rendering";
 import { EntityId } from "./entity";
 
+export type Inputs = {
+  moveLeft: boolean;
+  moveRight: boolean;
+  moveUp: boolean;
+  moveDown: boolean;
+};
+
 export type GameState = {
   renderState: RenderState;
   cameraPosition: Vec2;
@@ -11,9 +18,11 @@ export type GameState = {
   components: Components;
 
   randomSource: Uint8Array;
-  nextEntityId: EntityId;
+
+  inputs: Inputs;
 
   entities: {
+    nextId: EntityId;
     player: EntityId;
   };
 };
