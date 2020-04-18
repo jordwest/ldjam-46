@@ -1,0 +1,10 @@
+{
+  "scripts": {
+    "start": "parcel src/index.html"
+  },
+  "dependencies": {
+    "parcel-bundler": "^1.12.4",
+    "twgl.js": "^4.14.2",
+    "typescript": "^3.8.3"
+  }
+}
