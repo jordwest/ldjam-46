@@ -50,7 +50,7 @@ export namespace SpriteProgram {
     };
   }
 
-  type SpriteInstance = {
+  export type SpriteInstance = {
     position: Vec2;
     tile: Vec2;
     size: Vec2;

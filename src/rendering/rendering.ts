@@ -1,3 +1,4 @@
+import * as twgl from "twgl.js";
 import { SpriteProgram } from "./shaders/sprite/sprite";
 import spritesheetSrc from "../assets/spritesheet.png";
 import { VIRTUAL_SCREEN_SIZE } from "~config";
@@ -40,14 +41,7 @@ function clear(renderState: RenderState) {
   gl.clear(gl.COLOR_BUFFER_BIT);
 }
 
-export function render(renderState: RenderState) {
+export function prepareScreen(renderState: RenderState) {
+  twgl.bindFramebufferInfo(renderState.gl, null);
   clear(renderState);
-  const sprites = [
-    // grass
-    { position: { x: 0, y: 0 }, tile: { x: 9, y: 0 }, size: { x: 1, y: 1 } },
-    { position: { x: 0, y: 16 }, tile: { x: 9, y: 1 }, size: { x: 1, y: 1 } },
-    // player
-    { position: { x: 0, y: 0 }, tile: { x: 0, y: 0 }, size: { x: 1, y: 2 } },
-  ];
-  SpriteProgram.render(renderState.spriteProgram, VIRTUAL_SCREEN_SIZE, sprites);
 }
