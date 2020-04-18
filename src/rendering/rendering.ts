@@ -1,8 +1,11 @@
 import * as twgl from "twgl.js";
+import { SpriteProgram } from "./shaders/sprite/sprite";
 
 export type RenderState = {
   gl: WebGLRenderingContext;
   canvas: HTMLCanvasElement;
+
+  spriteProgram: SpriteProgram.State;
 };
 
 export function setup(canvas: HTMLCanvasElement): RenderState {
@@ -12,9 +15,12 @@ export function setup(canvas: HTMLCanvasElement): RenderState {
     throw new Error("WebGL is null");
   }
 
+  const spriteProgram = SpriteProgram.setup(gl);
+
   return {
     gl,
     canvas,
+    spriteProgram,
   };
 }
 
@@ -27,4 +33,5 @@ function clear(renderState: RenderState) {
 
 export function render(renderState: RenderState) {
   clear(renderState);
+  SpriteProgram.render(renderState.spriteProgram);
 }

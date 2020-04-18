@@ -6,6 +6,7 @@ function start() {
 
   function frame(_time: number) {
     Rendering.render(renderState);
+
     requestAnimationFrame(frame);
   }
 
