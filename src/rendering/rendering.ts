@@ -1,7 +1,6 @@
-import * as twgl from "twgl.js";
 import { SpriteProgram } from "./shaders/sprite/sprite";
 import spritesheetSrc from "../assets/spritesheet.png";
-import { Vec2 } from "~base/vec2";
+import { VIRTUAL_SCREEN_SIZE } from "~config";
 
 export type RenderState = {
   gl: WebGLRenderingContext;
@@ -41,13 +40,14 @@ function clear(renderState: RenderState) {
   gl.clear(gl.COLOR_BUFFER_BIT);
 }
 
-// Using the screen size of a NES
-const VIRTUAL_SCREEN_SIZE: Vec2 = {
-  x: 256,
-  y: 240,
-};
-
 export function render(renderState: RenderState) {
   clear(renderState);
-  SpriteProgram.render(renderState.spriteProgram, VIRTUAL_SCREEN_SIZE);
+  const sprites = [
+    // grass
+    { position: { x: 0, y: 0 }, tile: { x: 9, y: 0 }, size: { x: 1, y: 1 } },
+    { position: { x: 0, y: 16 }, tile: { x: 9, y: 1 }, size: { x: 1, y: 1 } },
+    // player
+    { position: { x: 0, y: 0 }, tile: { x: 0, y: 0 }, size: { x: 1, y: 2 } },
+  ];
+  SpriteProgram.render(renderState.spriteProgram, VIRTUAL_SCREEN_SIZE, sprites);
 }

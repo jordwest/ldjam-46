@@ -41,8 +41,6 @@ export namespace SpriteProgram {
     });
 
     const programInfo = twgl.createProgramInfo(gl, [vertSrc, fragSrc]);
-    window.offset = 16;
-
     return {
       gl,
       spriteTexture,
@@ -52,32 +50,44 @@ export namespace SpriteProgram {
     };
   }
 
-  export function render(state: State, viewSize: Vec2) {
+  type SpriteInstance = {
+    position: Vec2;
+    tile: Vec2;
+    size: Vec2;
+  };
+
+  export function render(
+    state: State,
+    viewSize: Vec2,
+    sprites: SpriteInstance[]
+  ) {
     const { gl } = state;
     gl.useProgram(state.programInfo.program);
     twgl.setBuffersAndAttributes(gl, state.programInfo, state.bufferInfo);
-
-    const tileX = 0;
-    const tileY = 0;
-    const tileCountX = 1;
-    const tileCountY = 2;
+    gl.enable(gl.BLEND);
+    gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
 
     const tileWidth =
       state.spritesheetInfo.tileWidth / state.spritesheetInfo.width;
     const tileHeight =
       state.spritesheetInfo.tileHeight / state.spritesheetInfo.height;
 
-    twgl.setUniforms(state.programInfo, {
-      texWidth: [tileWidth * tileCountX, tileHeight * tileCountY],
-      texOffset: [tileX * tileWidth, tileY * tileHeight],
-      spriteTexture: state.spriteTexture,
-      viewport: Vec2.toArray(viewSize),
-      pos: [0, window.offset],
-      size: [
-        state.spritesheetInfo.tileWidth * tileCountX,
-        state.spritesheetInfo.tileHeight * tileCountY,
-      ],
-    });
-    twgl.drawBufferInfo(gl, state.bufferInfo);
+    for (const sprite of sprites) {
+      const tileCountX = sprite.size.x;
+      const tileCountY = sprite.size.y;
+
+      twgl.setUniforms(state.programInfo, {
+        texWidth: [tileWidth * tileCountX, tileHeight * tileCountY],
+        texOffset: [sprite.tile.x * tileWidth, sprite.tile.y * tileHeight],
+        spriteTexture: state.spriteTexture,
+        viewport: Vec2.toArray(viewSize),
+        pos: [sprite.position.x, sprite.position.y],
+        size: [
+          state.spritesheetInfo.tileWidth * tileCountX,
+          state.spritesheetInfo.tileHeight * tileCountY,
+        ],
+      });
+      twgl.drawBufferInfo(gl, state.bufferInfo);
+    }
   }
 }
