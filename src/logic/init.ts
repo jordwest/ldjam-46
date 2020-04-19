@@ -5,8 +5,6 @@ import { EntityId } from "~state/entity";
 import { Entity } from "./entity";
 import { createPlayer } from "./entities/player";
 import { Components } from "~state/components/components";
-import { createHuman } from "./entities/human";
-import { createFire } from "./entities/fire";
 import { Audio } from "../audio/audio";
 import { createCamp } from "./entities/camp";
 
@@ -31,6 +29,7 @@ export function init(renderState: RenderState): GameState {
     collectable: new Map(),
     lifetime: new Map(),
     screenPosition: new Map(),
+    stepper: new Map(),
   };
 
   const startLocation = { x: 30, y: 30 };

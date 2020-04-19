@@ -10,12 +10,13 @@ export function createHuman(state: GameState, pos: Vec2) {
   state.components.sprite.set(id, {
     sprite: Sprites.human,
     currentAnimation: "sitting",
+    layer: "sprite",
     frame: 0,
   });
   state.components.agility.set(id, {
     sneakSpeed: 0.8,
     walkSpeed: 2.0,
-    runSpeed: 3.2,
+    runSpeed: 4.6,
   });
   state.components.angle.set(id, 1.18);
   state.components.brain.set(id, {

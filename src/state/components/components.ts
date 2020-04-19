@@ -6,7 +6,10 @@ export type SpriteState = {
   sprite: Sprite;
   currentAnimation: string;
   frame: number;
-  autoplay?: boolean;
+  layer: "sprite" | "overlay";
+  autoplay?: {
+    timePerFrame: number;
+  };
 };
 
 export type Agility = {
@@ -47,6 +50,12 @@ type Lifetime = {
   max: number;
 };
 
+type Stepper = {
+  perFrame: number;
+  frameSounds: { frame: number; sound: string }[];
+  accum: number;
+};
+
 export type Components = {
   position: Map<EntityId, Vec2>;
   screenPosition: Map<EntityId, Vec2>;
@@ -57,6 +66,7 @@ export type Components = {
   angle: Map<EntityId, number>;
   brain: Map<EntityId, Brain>;
   lifetime: Map<EntityId, Lifetime>;
+  stepper: Map<EntityId, Stepper>;
   collectable: Map<EntityId, Collectable>;
   particle: Map<EntityId, Particle>;
 };

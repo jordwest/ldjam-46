@@ -8,7 +8,16 @@ export function createPlayer(id: EntityId, pos: Vec2, components: Components) {
   components.sprite.set(id, {
     sprite: Sprites.player,
     currentAnimation: "walk-south",
+    layer: "sprite",
     frame: 0,
+  });
+  components.stepper.set(id, {
+    accum: 0,
+    perFrame: 0.3,
+    frameSounds: [
+      { frame: 1, sound: "footstep" },
+      { frame: 3, sound: "footstep" },
+    ],
   });
   components.agility.set(id, {
     sneakSpeed: 1,

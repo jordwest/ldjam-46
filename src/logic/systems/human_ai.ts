@@ -4,6 +4,7 @@ import { Vec2 } from "~base/vec2";
 import { Debug } from "~base/debug";
 import { Angle } from "~base/angle";
 import { createFearParticle } from "~logic/entities/fear_particle";
+import { createDialogue } from "~logic/entities/dialogue";
 
 export function runAi(state: GameState, dt: number) {
   const playerPos = expect(
@@ -43,22 +44,28 @@ export function runAi(state: GameState, dt: number) {
     } else if (distanceToPlayer < 6 && playerVisibility > 0.4) {
       // Oh shit, that's a monster, RUN!
       brain.fear = Math.max(brain.fear, 0.7);
+      if (brain.state.t !== "running") {
+        createDialogue(state, pos, "ahh");
+      }
       brain.state = { t: "running", awayFrom: { ...playerPos } };
     } else if (distanceToPlayer <= 15 && playerVisibility > 0.05) {
       // What IS that?
       if (brain.fear < 0.4) {
+        if (brain.state.t !== "investigating") {
+          createDialogue(state, pos, "look");
+        }
         brain.fear += 0.15 * dt;
         brain.state = { t: "investigating", lookingAt: { ...playerPos } };
       } else if (brain.fear < 0.9) {
+        if (brain.state.t !== "running") {
+          createDialogue(state, pos, "ahh");
+        }
         // Too scared, run away
         brain.state = { t: "running", awayFrom: { ...playerPos } };
       }
     }
 
-    if (brain.fear > 0.9) {
-      // Can't move at all when fear is this high
-      brain.state = { t: "frozen" };
-    } else if (brain.fear > 0 && brain.sawPlayerAt) {
+    if (brain.fear > 0 && brain.sawPlayerAt) {
       // If they've seen the player before, run at the slightest bit of fear
       brain.state = { t: "running", awayFrom: { ...brain.sawPlayerAt } };
     }

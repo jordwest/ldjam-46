@@ -27,7 +27,10 @@ export function createFearParticle(
   state.components.sprite.set(id, {
     sprite: Sprites.fearParticle,
     currentAnimation: "default",
+    layer: "overlay",
     frame: 0,
-    autoplay: true,
+    autoplay: {
+      timePerFrame: 0.2,
+    },
   });
 }

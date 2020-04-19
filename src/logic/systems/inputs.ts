@@ -22,10 +22,15 @@ export function handleInput(state: GameState, dt: number) {
   }
 
   if (Vec2.len(direction) > 0) {
-    const dPos = Vec2.multScalar(
-      Vec2.unitVector(direction),
-      agility.walkSpeed * dt
-    );
+    const movement = agility.walkSpeed * dt;
+    const dPos = Vec2.multScalar(Vec2.unitVector(direction), movement);
+
+    const stepper = expect(state.components.stepper.get(playerId));
+    stepper.accum += movement;
+
     state.components.position.set(playerId, Vec2.add(pos, dPos));
+  } else {
+    const sprite = expect(state.components.sprite.get(playerId));
+    sprite.frame = 0;
   }
 }

@@ -10,7 +10,10 @@ export function createFire(state: GameState, pos: Vec2) {
   state.components.sprite.set(id, {
     currentAnimation: "default",
     frame: 0,
+    layer: "sprite",
     sprite: Sprites.fire,
-    autoplay: true,
+    autoplay: {
+      timePerFrame: 0.2,
+    },
   });
 }

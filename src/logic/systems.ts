@@ -18,6 +18,7 @@ import { Debug } from "~base/debug";
 import { updateLifetimes } from "./systems/lifetime";
 import { updateParticles } from "./systems/particles";
 import { collectCollectables } from "./systems/collectables";
+import { advanceStepper } from "./systems/stepper";
 
 export function runAllSystems(state: GameState, dt: number) {
   Debug.measure("calculateVisibility", () => {
@@ -33,6 +34,9 @@ export function runAllSystems(state: GameState, dt: number) {
   Debug.measure("input", () => {
     handleInput(state, dt);
   });
+
+  advanceStepper(state);
+
   Debug.measure("camera", () => {
     moveCamera(state, dt);
   });
@@ -44,13 +48,14 @@ export function runAllSystems(state: GameState, dt: number) {
   Debug.measure("rendering", () => {
     prepareSceneColors(state.renderState);
     renderGrass(state);
-    renderSprites(state, dt);
+    renderSprites(state, dt, (sprite) => sprite.layer === "sprite");
 
     prepareSceneLighting(state.renderState);
     drawTorches(state);
 
     prepareVirtualScreen(state.renderState);
     SceneProgram.render(state.renderState.sceneProgram);
+    renderSprites(state, dt, (sprite) => sprite.layer === "overlay");
 
     prepareScreen(state.renderState);
     renderScreen(state.renderState);

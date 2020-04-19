@@ -2,11 +2,21 @@ import { GameState } from "~state/state";
 import { SpriteProgram } from "~rendering/shaders/sprite/sprite";
 import { Coords } from "~base/coords";
 import { Vec2 } from "~base/vec2";
+import { SpriteState } from "~state/components/components";
+import { EntityId } from "~state/entity";
 
-export function renderSprites(state: GameState, dt: number) {
+export function renderSprites(
+  state: GameState,
+  dt: number,
+  filter?: (sprite: SpriteState, entityId: EntityId) => boolean
+) {
   let spritesToRender: SpriteProgram.SpriteInstance[] = [];
 
   for (const [id, sprite] of state.components.sprite.entries()) {
+    if (filter && filter(sprite, id) === false) {
+      continue;
+    }
+
     let pos, zOrder;
     let tilePos = state.components.position.get(id);
     const lifetime = state.components.lifetime.get(id);
@@ -42,10 +52,12 @@ export function renderSprites(state: GameState, dt: number) {
     }
 
     // Wrap around frame number
-    let frame = Math.floor(sprite.frame) % anim.tile.length;
-    if (sprite.autoplay) {
-      sprite.frame += dt * 6;
+
+    if (sprite.autoplay != null) {
+      sprite.frame += dt / sprite.autoplay.timePerFrame;
     }
+
+    let frame = Math.floor(sprite.frame) % anim.tile.length;
 
     const alpha =
       lifetime != null

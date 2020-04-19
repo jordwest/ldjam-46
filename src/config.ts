@@ -10,7 +10,19 @@ export const VIRTUAL_SCREEN_SIZE: Vec2 = {
 export namespace Sprites {
   export const player: Sprite = {
     size: { x: 1, y: 2 },
-    sequences: new Map([["walk-south", { tile: [{ x: 0, y: 0 }] }]]),
+    sequences: new Map([
+      [
+        "walk-south",
+        {
+          tile: [
+            { x: 0, y: 8 },
+            { x: 1, y: 8 },
+            { x: 0, y: 8 },
+            { x: 2, y: 8 },
+          ],
+        },
+      ],
+    ]),
   };
 
   export const human: Sprite = {
@@ -18,6 +30,26 @@ export namespace Sprites {
     sequences: new Map([
       ["standing", { tile: [{ x: 0, y: 2 }] }],
       ["sitting", { tile: [{ x: 0, y: 3 }] }],
+    ]),
+  };
+
+  export const dialogueLook: Sprite = {
+    size: { x: 1, y: 1 },
+    sequences: new Map([["default", { tile: [{ x: 11, y: 2 }] }]]),
+  };
+
+  export const dialogueAhh: Sprite = {
+    size: { x: 1, y: 1 },
+    sequences: new Map([
+      [
+        "default",
+        {
+          tile: [
+            { x: 11, y: 3 },
+            { x: 11, y: 4 },
+          ],
+        },
+      ],
     ]),
   };
 
