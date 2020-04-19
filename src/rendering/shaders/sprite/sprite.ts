@@ -8,6 +8,7 @@ export namespace SpriteProgram {
     gl: WebGLRenderingContext;
     programInfo: twgl.ProgramInfo;
     bufferInfo: twgl.BufferInfo;
+    debugTexture: WebGLTexture;
     spriteTexture: WebGLTexture;
     spritesheetInfo: SpritesheetInfo;
   };
@@ -35,6 +36,11 @@ export namespace SpriteProgram {
       },
     });
     gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
+    const debugTexture = twgl.createTexture(gl, {
+      mag: gl.NEAREST,
+      min: gl.LINEAR,
+      src: [255, 0, 0, 255],
+    });
     const spriteTexture = twgl.createTexture(gl, {
       src: spritesheet.src,
       mag: gl.NEAREST,
@@ -43,6 +49,7 @@ export namespace SpriteProgram {
     const programInfo = twgl.createProgramInfo(gl, [vertSrc, fragSrc]);
     return {
       gl,
+      debugTexture,
       spriteTexture,
       spritesheetInfo: spritesheet,
       bufferInfo,
@@ -54,7 +61,26 @@ export namespace SpriteProgram {
     position: Vec2;
     tile: Vec2;
     size: Vec2;
+    zOrder: number;
   };
+
+  export function debugSprite(state: State, viewSize: Vec2, pos: Vec2) {
+    const { gl } = state;
+    gl.useProgram(state.programInfo.program);
+    twgl.setBuffersAndAttributes(gl, state.programInfo, state.bufferInfo);
+    gl.enable(gl.BLEND);
+    gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+
+    twgl.setUniforms(state.programInfo, {
+      texWidth: [1.0, 1.0],
+      texOffset: [0.0, 0.0],
+      spriteTexture: state.debugTexture,
+      viewport: Vec2.toArray(viewSize),
+      pos: [pos.x, pos.y],
+      size: [16, 16],
+    });
+    twgl.drawBufferInfo(gl, state.bufferInfo);
+  }
 
   export function render(
     state: State,
@@ -72,7 +98,9 @@ export namespace SpriteProgram {
     const tileHeight =
       state.spritesheetInfo.tileHeight / state.spritesheetInfo.height;
 
-    for (const sprite of sprites) {
+    let sortedSprites = sprites.sort((a, b) => a.zOrder - b.zOrder);
+
+    for (const sprite of sortedSprites) {
       const tileCountX = sprite.size.x;
       const tileCountY = sprite.size.y;
 

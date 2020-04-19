@@ -18,4 +18,5 @@ export type Components = {
   position: Map<EntityId, Vec2>;
   sprite: Map<EntityId, SpriteState>;
   agility: Map<EntityId, Agility>;
+  torchOn: Set<EntityId>;
 };

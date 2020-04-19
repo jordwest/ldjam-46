@@ -5,6 +5,7 @@ import { EntityId } from "~state/entity";
 import { Entity } from "./entity";
 import { createPlayer } from "./entities/player";
 import { Components } from "~state/components/components";
+import { createHuman } from "./entities/human";
 
 export function init(renderState: RenderState): GameState {
   const randomSource = new Uint8Array(1024);
@@ -19,6 +20,7 @@ export function init(renderState: RenderState): GameState {
     position: new Map(),
     sprite: new Map(),
     agility: new Map(),
+    torchOn: new Set(),
   };
 
   const startLocation = { x: 30, y: 30 };
@@ -41,6 +43,10 @@ export function init(renderState: RenderState): GameState {
       player,
     },
   };
+
+  createHuman(state, { x: 35, y: 32 });
+  createHuman(state, { x: 35, y: 32.5 });
+  createHuman(state, { x: 35, y: 33 });
 
   return state;
 }

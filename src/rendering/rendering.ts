@@ -3,14 +3,20 @@ import { SpriteProgram } from "./shaders/sprite/sprite";
 import spritesheetSrc from "../assets/spritesheet.png";
 import { Vec2 } from "~base/vec2";
 import { ScreenProgram } from "./shaders/screen/screen";
+import { LightingProgram } from "./shaders/lighting/lighting";
+import { SceneProgram } from "./shaders/scene/scene";
 
 export type RenderState = {
   gl: WebGLRenderingContext;
   canvas: HTMLCanvasElement;
 
+  activeFramebuffer: twgl.FramebufferInfo | null;
+
   virtualScreen: twgl.FramebufferInfo;
   spriteProgram: SpriteProgram.State;
+  lightingProgram: LightingProgram.State;
   screenProgram: ScreenProgram.State;
+  sceneProgram: SceneProgram.State;
 };
 
 const SPRITESHEET: SpriteProgram.SpritesheetInfo = {
@@ -33,6 +39,8 @@ export function setup(
 
   const spriteProgram = SpriteProgram.setup(gl, SPRITESHEET);
   const screenProgram = ScreenProgram.setup(gl);
+  const sceneProgram = SceneProgram.setup(gl, virtualScreenSize);
+  const lightingProgram = LightingProgram.setup(gl);
   const virtualScreen = twgl.createFramebufferInfo(
     gl,
     [
@@ -47,8 +55,11 @@ export function setup(
   return {
     gl,
     canvas,
+    activeFramebuffer: null,
     virtualScreen,
     spriteProgram,
+    lightingProgram,
+    sceneProgram,
     screenProgram,
   };
 }
@@ -60,14 +71,54 @@ function clear(renderState: RenderState) {
   gl.clear(gl.COLOR_BUFFER_BIT);
 }
 
+function setFramebuffer(
+  renderState: RenderState,
+  framebuffer: twgl.FramebufferInfo | null
+) {
+  twgl.bindFramebufferInfo(renderState.gl, framebuffer);
+  renderState.activeFramebuffer = framebuffer;
+}
+
+export function withFramebuffer(
+  renderState: RenderState,
+  framebuffer: twgl.FramebufferInfo | null,
+  fn: () => void
+) {
+  const prevFramebuffer = renderState.activeFramebuffer;
+  setFramebuffer(renderState, framebuffer);
+  fn();
+  setFramebuffer(renderState, prevFramebuffer);
+}
+
 export function prepareVirtualScreen(renderState: RenderState) {
-  twgl.bindFramebufferInfo(renderState.gl, renderState.virtualScreen);
+  setFramebuffer(renderState, renderState.virtualScreen);
   clear(renderState);
 }
 
 export function prepareScreen(renderState: RenderState) {
-  twgl.bindFramebufferInfo(renderState.gl, null);
+  setFramebuffer(renderState, null);
   clear(renderState);
+}
+
+export function prepareSceneLighting(renderState: RenderState) {
+  const { gl } = renderState;
+  setFramebuffer(renderState, renderState.sceneProgram.sceneLighting);
+
+  // Add some ambient light
+  gl.clearColor(0.5, 0.5, 0.8, 1);
+  gl.clear(gl.COLOR_BUFFER_BIT);
+}
+
+export function prepareSceneColors(renderState: RenderState) {
+  setFramebuffer(renderState, renderState.sceneProgram.sceneColors);
+  clear(renderState);
+}
+
+export function renderScene(renderState: RenderState) {
+  ScreenProgram.render(
+    renderState.screenProgram,
+    renderState.virtualScreen.attachments[0]
+  );
 }
 
 export function renderScreen(renderState: RenderState) {

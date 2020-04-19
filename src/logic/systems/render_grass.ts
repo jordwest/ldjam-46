@@ -12,10 +12,13 @@ export function renderGrass(state: GameState) {
     for (let y = Math.floor(screenExtent.y); y < screenExtent.y2; y++) {
       let pos = { x, y };
 
-      pos = Coords.worldToVirtualScreen(
-        { x, y },
-        state.cameraPosition,
-        state.virtualScreenSize
+      pos = Vec2.quantize(
+        Coords.worldToVirtualScreen(
+          { x, y },
+          state.cameraPosition,
+          state.virtualScreenSize
+        ),
+        1
       );
 
       // Pick a number between 1 and 10 for this tile
@@ -32,6 +35,7 @@ export function renderGrass(state: GameState) {
         position: pos,
         tile: { x: 9, y: variant },
         size: { x: 1, y: 1 },
+        zOrder: 1,
       });
     }
   }

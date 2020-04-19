@@ -4,18 +4,31 @@ import {
   prepareScreen,
   renderScreen,
   prepareVirtualScreen,
+  prepareSceneLighting,
+  prepareSceneColors,
 } from "~rendering/rendering";
 import { renderSprites } from "./systems/render_sprites";
 import { handleInput } from "./systems/inputs";
 import { moveCamera } from "./systems/move_camera";
+import { SceneProgram } from "~rendering/shaders/scene/scene";
+import { drawTorches } from "./systems/draw_torches";
+import { calculateVisibility } from "./systems/calculate_visibility";
 
 export function runAllSystems(state: GameState, dt: number) {
+  calculateVisibility(state);
   handleInput(state, dt);
   moveCamera(state, dt);
 
-  prepareVirtualScreen(state.renderState);
+  prepareSceneColors(state.renderState);
   renderGrass(state);
   renderSprites(state);
+
+  prepareSceneLighting(state.renderState);
+  drawTorches(state);
+
+  prepareVirtualScreen(state.renderState);
+  SceneProgram.render(state.renderState.sceneProgram);
+
   prepareScreen(state.renderState);
   renderScreen(state.renderState);
 }

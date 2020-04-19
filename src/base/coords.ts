@@ -5,8 +5,12 @@ export namespace Coords {
     world: Vec2,
     cameraPosition: Vec2,
     virtualScreenSize: Vec2
-  ): Vec2 => ({
-    x: (world.x - cameraPosition.x) * 16 + virtualScreenSize.x / 2,
-    y: (world.y - cameraPosition.y) * 16 + virtualScreenSize.y / 2,
-  });
+  ): Vec2 =>
+    Vec2.quantize(
+      {
+        x: (world.x - cameraPosition.x) * 16 + virtualScreenSize.x / 2,
+        y: (world.y - cameraPosition.y) * 16 + virtualScreenSize.y / 2,
+      },
+      1
+    );
 }

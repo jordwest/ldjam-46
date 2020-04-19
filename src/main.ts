@@ -2,6 +2,7 @@ import * as Rendering from "~rendering/rendering";
 import { init } from "~logic/init";
 import { runAllSystems } from "~logic/systems";
 import { VIRTUAL_SCREEN_SIZE } from "~config";
+import { Debug } from "~base/debug";
 
 function start() {
   const canvas = document.querySelector("canvas#game") as HTMLCanvasElement;
@@ -9,8 +10,7 @@ function start() {
   const gameState = init(renderState);
 
   document.addEventListener("keydown", (e) => {
-    e.preventDefault();
-
+    let handled = true;
     switch (e.key) {
       case "w":
       case "W":
@@ -34,11 +34,14 @@ function start() {
         break;
       default:
         console.log("unhandled key", e.key);
+        handled = false;
+    }
+    if (handled) {
+      e.preventDefault();
     }
   });
   document.addEventListener("keyup", (e) => {
-    e.preventDefault();
-
+    let handled = true;
     switch (e.key) {
       case "w":
       case "W":
@@ -60,6 +63,11 @@ function start() {
       case "ArrowRight":
         gameState.inputs.moveRight = false;
         break;
+      default:
+        handled = false;
+    }
+    if (handled) {
+      e.preventDefault();
     }
   });
 
@@ -71,12 +79,14 @@ function start() {
       lastTime = time;
 
       // Only run everything for normal timesteps
-      if (dt < 1000) {
+      if (dt < 1) {
         runAllSystems(gameState, dt);
       }
     } else {
       lastTime = time;
     }
+
+    Debug.update();
 
     requestAnimationFrame(frame);
   }

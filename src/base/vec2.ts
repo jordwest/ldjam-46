@@ -10,8 +10,8 @@ export namespace Vec2 {
    * Quantize a vector to the nearest tile
    */
   export const quantize = (v: Vec2, tileSize: number) => ({
-    x: Math.floor(v.x / tileSize) * tileSize,
-    y: Math.floor(v.y / tileSize) * tileSize,
+    x: Math.round(v.x / tileSize) * tileSize,
+    y: Math.round(v.y / tileSize) * tileSize,
   });
 
   export const divScalar = (v: Vec2, scalar: number) => ({

@@ -1,15 +1,23 @@
 import { GameState } from "~state/state";
 import { SpriteProgram } from "~rendering/shaders/sprite/sprite";
 import { Coords } from "~base/coords";
+import { Vec2 } from "~base/vec2";
 
 export function renderSprites(state: GameState) {
-  let sprites: SpriteProgram.SpriteInstance[] = [];
+  let spritesToRender: SpriteProgram.SpriteInstance[] = [];
+
   for (const [id, sprite] of state.components.sprite.entries()) {
-    let pos = state.components.position.get(id);
-    if (pos == null) {
+    let tilePos = state.components.position.get(id);
+    if (tilePos == null) {
       // No position, we can't render it
       return;
     }
+
+    // Ensure bottom tile is shown at the sprite's location
+    let pos = {
+      x: tilePos.x,
+      y: tilePos.y - (sprite.sprite.size.y - 1),
+    };
 
     pos = Coords.worldToVirtualScreen(
       pos,
@@ -27,16 +35,17 @@ export function renderSprites(state: GameState) {
     // Wrap around frame number
     let frame = sprite.frame % anim.tile.length;
 
-    sprites.push({
-      position: pos,
+    spritesToRender.push({
+      position: Vec2.quantize(pos, 1),
       tile: anim.tile[frame],
       size: sprite.sprite.size,
+      zOrder: tilePos.y,
     });
   }
 
   SpriteProgram.render(
     state.renderState.spriteProgram,
     state.virtualScreenSize,
-    sprites
+    spritesToRender
   );
 }

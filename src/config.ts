@@ -12,4 +12,12 @@ export namespace Sprites {
     size: { x: 1, y: 2 },
     sequences: new Map([["walk-south", { tile: [{ x: 0, y: 0 }] }]]),
   };
+
+  export const human: Sprite = {
+    size: { x: 1, y: 1 },
+    sequences: new Map([
+      ["standing", { tile: [{ x: 0, y: 2 }] }],
+      ["sitting", { tile: [{ x: 0, y: 3 }] }],
+    ]),
+  };
 }

@@ -10,5 +10,8 @@ export function moveCamera(state: GameState, dt: number) {
   const cameraError = Vec2.subtract(cameraTarget, state.cameraPosition);
   const dPos = Vec2.multScalar(cameraError, 1.8 * dt);
 
-  state.cameraPosition = Vec2.add(state.cameraPosition, dPos);
+  state.cameraPosition = Vec2.quantize(
+    Vec2.add(state.cameraPosition, dPos),
+    1 / 16
+  );
 }
