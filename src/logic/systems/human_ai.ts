@@ -18,7 +18,7 @@ export function runAi(state: GameState, dt: number) {
     const agility = expect(state.components.agility.get(entityId));
     const distanceToPlayer = Vec2.distance(pos, playerPos);
 
-    brain.fear = Math.max(0, brain.fear - 0.03 * dt);
+    brain.fear = Math.max(0, brain.fear - 0.01 * dt);
 
     // Do we need to change our current activity?
     if (distanceToPlayer < 2 && playerVisibility > 0.2) {
@@ -29,9 +29,10 @@ export function runAi(state: GameState, dt: number) {
       // Oh shit, that's a monster, RUN!
       brain.fear = Math.max(brain.fear, 0.7);
       brain.state = { t: "running", awayFrom: { ...playerPos } };
-    } else if (distanceToPlayer <= 9 && playerVisibility > 0.2) {
+    } else if (distanceToPlayer <= 15 && playerVisibility > 0.05) {
       // What IS that?
-      if (brain.fear < 0.2) {
+      if (brain.fear < 0.4) {
+        brain.fear += 0.15 * dt;
         brain.state = { t: "investigating", lookingAt: { ...playerPos } };
       } else if (brain.fear < 0.9) {
         // Too scared, run away
@@ -55,6 +56,7 @@ export function runAi(state: GameState, dt: number) {
         Vec2.subtract(brain.state.lookingAt, pos)
       );
       brain.targetAngle = Vec2.angleOf(vecToTarget);
+      state.components.lightSource.set(entityId, "torch");
       if (distToTarget > 1) {
         // Move towards thing
         deltaPos = Vec2.multScalar(vecToTarget, dt * agility.sneakSpeed);
@@ -65,6 +67,7 @@ export function runAi(state: GameState, dt: number) {
       );
       brain.targetAngle = Vec2.angleOf(vecAwayFrom);
       deltaPos = Vec2.multScalar(vecAwayFrom, dt * agility.runSpeed);
+      state.components.lightSource.set(entityId, "torch");
     }
     if (deltaPos != null) {
       state.components.position.set(entityId, Vec2.add(pos, deltaPos));

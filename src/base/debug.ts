@@ -7,6 +7,14 @@ export class Debug {
     Debug.items.set(label, stringVal);
   }
 
+  static measure(label: string, fn: () => void) {
+    const start = performance.now();
+    fn();
+    const end = performance.now();
+
+    this.record(label, `${Math.floor(end - start)}ms`);
+  }
+
   private static getHtml(): Element {
     const root = document.createElement("table");
     root.className = "debug";

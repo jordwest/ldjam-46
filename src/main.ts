@@ -80,7 +80,12 @@ function start() {
 
       // Only run everything for normal timesteps
       if (dt < 1) {
-        runAllSystems(gameState, dt);
+        Debug.measure("runAllSystems", () => {
+          runAllSystems(gameState, dt);
+        });
+        Debug.measure("glFinish", () => {
+          gameState.renderState.gl.finish();
+        });
       }
     } else {
       lastTime = time;

@@ -14,24 +14,36 @@ import { SceneProgram } from "~rendering/shaders/scene/scene";
 import { drawTorches } from "./systems/draw_torches";
 import { calculateVisibility } from "./systems/calculate_visibility";
 import { runAi } from "./systems/human_ai";
+import { Debug } from "~base/debug";
 
 export function runAllSystems(state: GameState, dt: number) {
-  calculateVisibility(state);
-  handleInput(state, dt);
-  moveCamera(state, dt);
+  Debug.measure("calculateVisibility", () => {
+    calculateVisibility(state);
+  });
 
-  runAi(state, dt);
+  Debug.measure("input", () => {
+    handleInput(state, dt);
+  });
+  Debug.measure("camera", () => {
+    moveCamera(state, dt);
+  });
 
-  prepareSceneColors(state.renderState);
-  renderGrass(state);
-  renderSprites(state, dt);
+  Debug.measure("ai", () => {
+    runAi(state, dt);
+  });
 
-  prepareSceneLighting(state.renderState);
-  drawTorches(state);
+  Debug.measure("rendering", () => {
+    prepareSceneColors(state.renderState);
+    renderGrass(state);
+    renderSprites(state, dt);
 
-  prepareVirtualScreen(state.renderState);
-  SceneProgram.render(state.renderState.sceneProgram);
+    prepareSceneLighting(state.renderState);
+    drawTorches(state);
 
-  prepareScreen(state.renderState);
-  renderScreen(state.renderState);
+    prepareVirtualScreen(state.renderState);
+    SceneProgram.render(state.renderState.sceneProgram);
+
+    prepareScreen(state.renderState);
+    renderScreen(state.renderState);
+  });
 }

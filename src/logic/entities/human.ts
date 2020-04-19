@@ -24,5 +24,4 @@ export function createHuman(state: GameState, pos: Vec2) {
     targetAngle: 0,
     fear: 0,
   });
-  state.components.lightSource.set(id, "torch");
 }

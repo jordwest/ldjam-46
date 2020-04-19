@@ -4,8 +4,8 @@ import { expect } from "~base/expect";
 import { withFramebuffer } from "~rendering/rendering";
 import { Debug } from "~base/debug";
 
+let data = new Uint8Array(16 * 16 * 4);
 export function calculateVisibility(state: GameState) {
-  let data = new Uint8Array(16 * 16 * 4);
   withFramebuffer(
     state.renderState,
     state.renderState.sceneProgram.sceneLighting,
