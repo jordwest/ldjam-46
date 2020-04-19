@@ -13,9 +13,16 @@ export function createHuman(state: GameState, pos: Vec2) {
     frame: 0,
   });
   state.components.agility.set(id, {
-    sneakSpeed: 1,
-    walkSpeed: 2.5,
+    sneakSpeed: 0.8,
+    walkSpeed: 2.0,
     runSpeed: 3.2,
   });
-  state.components.torchOn.add(id);
+  state.components.angle.set(id, 1.18);
+  state.components.brain.set(id, {
+    state: { t: "sitting" },
+    sawPlayerAt: undefined,
+    targetAngle: 0,
+    fear: 0,
+  });
+  state.components.lightSource.set(id, "torch");
 }

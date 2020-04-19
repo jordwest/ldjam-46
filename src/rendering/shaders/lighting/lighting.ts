@@ -2,6 +2,7 @@ import vertSrc from "./lighting.vert";
 import fragSrc from "./lighting.frag";
 import * as twgl from "twgl.js";
 import torchTextureSrc from "../../../assets/torch.png";
+import fireTextureSrc from "../../../assets/fire.png";
 import { Vec2 } from "~base/vec2";
 
 export namespace LightingProgram {
@@ -10,6 +11,7 @@ export namespace LightingProgram {
     programInfo: twgl.ProgramInfo;
     bufferInfo: twgl.BufferInfo;
     torchTexture: WebGLTexture;
+    fireTexture: WebGLTexture;
   };
 
   export function setup(gl: WebGLRenderingContext): State {
@@ -19,7 +21,14 @@ export namespace LightingProgram {
         data: new Float32Array([-1, -1, -1, 1, 1, -1, -1, 1, 1, 1, 1, -1]),
       },
     });
-    const torchTexture = twgl.createTexture(gl, { src: torchTextureSrc });
+    const torchTexture = twgl.createTexture(gl, {
+      src: torchTextureSrc,
+      mag: gl.NEAREST,
+    });
+    const fireTexture = twgl.createTexture(gl, {
+      src: fireTextureSrc,
+      mag: gl.NEAREST,
+    });
 
     const programInfo = twgl.createProgramInfo(gl, [vertSrc, fragSrc]);
     return {
@@ -27,12 +36,24 @@ export namespace LightingProgram {
       bufferInfo,
       programInfo,
       torchTexture,
+      fireTexture,
     };
   }
 
+  export type LightType = "torch" | "fire";
   export type LightInstance = {
     pos: Vec2;
     angle: number;
+    lightType: LightType;
+  };
+
+  const textureForLight = (state: State, t: LightType) => {
+    switch (t) {
+      case "torch":
+        return state.torchTexture;
+      case "fire":
+        return state.fireTexture;
+    }
   };
 
   export function render(
@@ -53,7 +74,7 @@ export namespace LightingProgram {
           -((light.pos.y / viewSize.y) * 2 - 1),
         ],
         rotate: light.angle,
-        lightTexture: state.torchTexture,
+        lightTexture: textureForLight(state, light.lightType),
       });
       twgl.drawBufferInfo(gl, state.bufferInfo);
     }

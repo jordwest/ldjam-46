@@ -3,7 +3,7 @@ import { SpriteProgram } from "~rendering/shaders/sprite/sprite";
 import { Coords } from "~base/coords";
 import { Vec2 } from "~base/vec2";
 
-export function renderSprites(state: GameState) {
+export function renderSprites(state: GameState, dt: number) {
   let spritesToRender: SpriteProgram.SpriteInstance[] = [];
 
   for (const [id, sprite] of state.components.sprite.entries()) {
@@ -33,7 +33,10 @@ export function renderSprites(state: GameState) {
     }
 
     // Wrap around frame number
-    let frame = sprite.frame % anim.tile.length;
+    let frame = Math.floor(sprite.frame) % anim.tile.length;
+    if (sprite.autoplay) {
+      sprite.frame += dt * 6;
+    }
 
     spritesToRender.push({
       position: Vec2.quantize(pos, 1),

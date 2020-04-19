@@ -6,22 +6,26 @@ import { Vec2 } from "~base/vec2";
 export function drawTorches(state: GameState) {
   let torches: LightingProgram.LightInstance[] = [];
 
-  for (const id of state.components.torchOn.keys()) {
-    const pos = state.components.position.get(id);
+  for (const [id, lightType] of state.components.lightSource.entries()) {
+    let pos = state.components.position.get(id);
     if (pos == null) {
       continue;
     }
+    const angle = state.components.angle.get(id) || 0;
+    pos = {
+      x: pos.x + 0.5,
+      y: pos.y + 0.5,
+    };
+    pos = Coords.worldToVirtualScreen(
+      pos,
+      state.cameraPosition,
+      state.virtualScreenSize
+    );
 
     torches.push({
-      pos: Vec2.quantize(
-        Coords.worldToVirtualScreen(
-          pos,
-          state.cameraPosition,
-          state.virtualScreenSize
-        ),
-        1
-      ),
-      angle: 0,
+      pos: Vec2.quantize(pos, 1),
+      angle,
+      lightType,
     });
   }
 

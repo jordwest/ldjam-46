@@ -20,4 +20,19 @@ export namespace Sprites {
       ["sitting", { tile: [{ x: 0, y: 3 }] }],
     ]),
   };
+
+  export const fire: Sprite = {
+    size: { x: 1, y: 1 },
+    sequences: new Map([
+      [
+        "default",
+        {
+          tile: [
+            { x: 11, y: 0 },
+            { x: 11, y: 1 },
+          ],
+        },
+      ],
+    ]),
+  };
 }

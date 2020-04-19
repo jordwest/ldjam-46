@@ -12,7 +12,8 @@ export function createPlayer(id: EntityId, pos: Vec2, components: Components) {
   });
   components.agility.set(id, {
     sneakSpeed: 1,
-    walkSpeed: 2.5,
-    runSpeed: 2.5,
+    walkSpeed: 2.9,
+    runSpeed: 2.9,
   });
+  components.visibility.set(id, 0);
 }

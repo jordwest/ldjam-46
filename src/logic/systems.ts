@@ -13,15 +13,18 @@ import { moveCamera } from "./systems/move_camera";
 import { SceneProgram } from "~rendering/shaders/scene/scene";
 import { drawTorches } from "./systems/draw_torches";
 import { calculateVisibility } from "./systems/calculate_visibility";
+import { runAi } from "./systems/human_ai";
 
 export function runAllSystems(state: GameState, dt: number) {
   calculateVisibility(state);
   handleInput(state, dt);
   moveCamera(state, dt);
 
+  runAi(state, dt);
+
   prepareSceneColors(state.renderState);
   renderGrass(state);
-  renderSprites(state);
+  renderSprites(state, dt);
 
   prepareSceneLighting(state.renderState);
   drawTorches(state);
