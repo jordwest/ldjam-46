@@ -21,6 +21,24 @@ export namespace Sprites {
     ]),
   };
 
+  export const fearParticle: Sprite = {
+    size: { x: 1, y: 1 },
+    sequences: new Map([
+      [
+        "default",
+        {
+          tile: [
+            { x: 14, y: 0 },
+            { x: 14, y: 1 },
+            { x: 14, y: 2 },
+            { x: 14, y: 1 },
+          ],
+        },
+      ],
+      ["collected", { tile: [{ x: 15, y: 0 }] }],
+    ]),
+  };
+
   export const fire: Sprite = {
     size: { x: 1, y: 1 },
     sequences: new Map([

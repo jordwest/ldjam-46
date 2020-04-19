@@ -20,6 +20,7 @@ export namespace Vec2 {
 
   export const distance = (a: Vec2, b: Vec2): number =>
     Math.hypot(a.x - b.x, a.y - b.y);
+  export const len = (v: Vec2): number => Math.hypot(v.x, v.y);
 
   export const unitVector = (v: Vec2): Vec2 => {
     const d = distance(ORIGIN, v);

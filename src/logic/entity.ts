@@ -10,10 +10,10 @@ export namespace Entity {
 
   type Deletable = Map<EntityId, unknown> & Set<EntityId>;
   export function remove(state: GameState, id: EntityId) {
-    for (const key in Object.keys(state.components)) {
+    Object.keys(state.components).forEach((key) => {
       // Can't be bothered come on typescript
       const component = (state.components as any)[key] as Deletable;
       component.delete(id);
-    }
+    });
   }
 }

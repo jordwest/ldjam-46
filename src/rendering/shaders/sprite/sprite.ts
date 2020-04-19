@@ -61,6 +61,7 @@ export namespace SpriteProgram {
     position: Vec2;
     tile: Vec2;
     size: Vec2;
+    alpha?: number;
     zOrder: number;
   };
 
@@ -103,12 +104,14 @@ export namespace SpriteProgram {
     for (const sprite of sortedSprites) {
       const tileCountX = sprite.size.x;
       const tileCountY = sprite.size.y;
+      const alpha = sprite.alpha != null ? sprite.alpha : 1;
 
       twgl.setUniforms(state.programInfo, {
         texWidth: [tileWidth * tileCountX, tileHeight * tileCountY],
         texOffset: [sprite.tile.x * tileWidth, sprite.tile.y * tileHeight],
         spriteTexture: state.spriteTexture,
         viewport: Vec2.toArray(viewSize),
+        alpha,
         pos: [sprite.position.x, sprite.position.y],
         size: [
           state.spritesheetInfo.tileWidth * tileCountX,

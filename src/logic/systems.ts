@@ -15,11 +15,20 @@ import { drawTorches } from "./systems/draw_torches";
 import { calculateVisibility } from "./systems/calculate_visibility";
 import { runAi } from "./systems/human_ai";
 import { Debug } from "~base/debug";
+import { updateLifetimes } from "./systems/lifetime";
+import { updateParticles } from "./systems/particles";
+import { collectCollectables } from "./systems/collectables";
 
 export function runAllSystems(state: GameState, dt: number) {
   Debug.measure("calculateVisibility", () => {
     calculateVisibility(state);
   });
+
+  updateLifetimes(state, dt);
+  Debug.measure("particles", () => {
+    updateParticles(state, dt);
+  });
+  collectCollectables(state, dt);
 
   Debug.measure("input", () => {
     handleInput(state, dt);

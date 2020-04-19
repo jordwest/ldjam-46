@@ -2,6 +2,7 @@ import { Vec2 } from "~base/vec2";
 import { Components } from "./components/components";
 import { RenderState } from "~rendering/rendering";
 import { EntityId } from "./entity";
+import { Audio } from "~audio/audio";
 
 export type Inputs = {
   moveLeft: boolean;
@@ -12,6 +13,7 @@ export type Inputs = {
 
 export type GameState = {
   renderState: RenderState;
+  audioState: Audio.State;
   cameraPosition: Vec2;
   virtualScreenSize: Vec2;
 

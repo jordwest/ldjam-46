@@ -20,6 +20,7 @@ export function createHuman(state: GameState, pos: Vec2) {
   state.components.angle.set(id, 1.18);
   state.components.brain.set(id, {
     state: { t: "sitting" },
+    accumulatedFear: 0,
     sawPlayerAt: undefined,
     targetAngle: 0,
     fear: 0,

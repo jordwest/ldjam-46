@@ -7,6 +7,8 @@ import { createPlayer } from "./entities/player";
 import { Components } from "~state/components/components";
 import { createHuman } from "./entities/human";
 import { createFire } from "./entities/fire";
+import { Audio } from "../audio/audio";
+import { createCamp } from "./entities/camp";
 
 export function init(renderState: RenderState): GameState {
   const randomSource = new Uint8Array(1024);
@@ -25,13 +27,20 @@ export function init(renderState: RenderState): GameState {
     angle: new Map(),
     visibility: new Map(),
     brain: new Map(),
+    particle: new Map(),
+    collectable: new Map(),
+    lifetime: new Map(),
+    screenPosition: new Map(),
   };
 
   const startLocation = { x: 30, y: 30 };
   createPlayer(player, startLocation, components);
+  const audioState = Audio.init();
+  Audio.playSound(audioState, "ambience");
 
   const state: GameState = {
     renderState,
+    audioState,
     randomSource,
     cameraPosition: { ...startLocation },
     virtualScreenSize: VIRTUAL_SCREEN_SIZE,
@@ -48,8 +57,12 @@ export function init(renderState: RenderState): GameState {
     },
   };
 
+  /*
   createHuman(state, { x: 35, y: 32 });
   createFire(state, { x: 40, y: 29 });
+  */
+
+  createCamp(state, { x: 40, y: 29 });
 
   return state;
 }

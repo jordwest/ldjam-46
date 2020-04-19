@@ -1,3 +1,5 @@
+import { Vec2 } from "./vec2";
+
 export namespace Angle {
   export const normalize = (angle: number): number => {
     while (angle < 0) {
@@ -9,6 +11,13 @@ export namespace Angle {
     }
 
     return angle;
+  };
+
+  export const toVec = (angle: number): Vec2 => {
+    return {
+      x: Math.cos(angle),
+      y: Math.sin(angle),
+    };
   };
 
   export const angleBetween = (a: number, b: number): number => {
@@ -29,4 +38,3 @@ export namespace Angle {
     return wraps[0].v;
   };
 }
-

@@ -3,6 +3,7 @@ import { expect } from "~base/expect";
 import { Vec2 } from "~base/vec2";
 import { Debug } from "~base/debug";
 import { Angle } from "~base/angle";
+import { createFearParticle } from "~logic/entities/fear_particle";
 
 export function runAi(state: GameState, dt: number) {
   const playerPos = expect(
@@ -19,11 +20,25 @@ export function runAi(state: GameState, dt: number) {
     const distanceToPlayer = Vec2.distance(pos, playerPos);
 
     brain.fear = Math.max(0, brain.fear - 0.01 * dt);
+    brain.accumulatedFear += brain.fear * dt * 7 * Math.random();
+    if (brain.accumulatedFear > 0) {
+      const emitParticles = Math.floor(brain.accumulatedFear);
+      for (let i = 0; i < emitParticles; i++) {
+        createFearParticle(state, { x: pos.x, y: pos.y - 0.2 }, brain.fear * 4);
+      }
+      brain.accumulatedFear = brain.accumulatedFear - emitParticles;
+    }
 
     // Do we need to change our current activity?
     if (distanceToPlayer < 2 && playerVisibility > 0.2) {
       // Holy mother of god
       brain.fear = 1;
+      brain.sawPlayerAt = { ...playerPos };
+    } else if (distanceToPlayer < 1) {
+      // IT TOUCHED ME
+      brain.fear = 0.4;
+
+      brain.state = { t: "investigating", lookingAt: { ...playerPos } };
       brain.sawPlayerAt = { ...playerPos };
     } else if (distanceToPlayer < 6 && playerVisibility > 0.4) {
       // Oh shit, that's a monster, RUN!
