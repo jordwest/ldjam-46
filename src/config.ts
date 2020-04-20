@@ -49,7 +49,7 @@ export namespace Sprites {
     size: { x: 1, y: 1 },
     sequences: new Map([
       [
-        "moving",
+        "moving-right",
         {
           tile: [
             { x: 0, y: 2 },
@@ -57,7 +57,17 @@ export namespace Sprites {
           ],
         },
       ],
-      ["sitting", { tile: [{ x: 0, y: 3 }] }],
+      [
+        "moving-left",
+        {
+          tile: [
+            { x: 2, y: 2 },
+            { x: 3, y: 2 },
+          ],
+        },
+      ],
+      ["sitting-right", { tile: [{ x: 0, y: 3 }] }],
+      ["sitting-left", { tile: [{ x: 2, y: 3 }] }],
     ]),
   };
 

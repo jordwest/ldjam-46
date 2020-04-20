@@ -23,9 +23,12 @@ import { updateCursor } from "./systems/cursor";
 import { drawUi } from "./systems/draw_ui";
 import { consumeFear } from "./systems/consumption";
 import { drawCurrentScreen, renderScreen } from "./systems/screen";
+import { checkWinState } from "./systems/win_state";
 
 export function runAllSystems(state: GameState, dt: number) {
   state.t += dt;
+
+  checkWinState(state);
 
   calculateVisibility(state);
 

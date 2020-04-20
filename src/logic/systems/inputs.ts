@@ -2,14 +2,58 @@ import { GameState } from "~state/state";
 import { expect } from "~base/expect";
 import { Vec2 } from "~base/vec2";
 import { restartGame } from "~logic/init";
+import { Audio } from "~audio/audio";
 
 export function handleInput(state: GameState, dt: number) {
   if (state.inputs.event?.t === "click") {
-    if (state.screen.t === "instructions") {
-      state.screen = { t: "transition", time: 0 };
-    }
-    if (state.screen.t === "game" && state.stats.dead === true) {
-      state.screen = { t: "instructions" };
+    // Oh dear god why are we equality checking a texture for game state
+    // Because time is almost up that's why
+    if (
+      state.screen.t === "screen" &&
+      state.screen.texture === state.renderState.instructionsScreen
+    ) {
+      state.screen = {
+        t: "transition",
+        fromScreen: state.renderState.instructionsScreen,
+        toScreen: undefined,
+        time: 0,
+      };
+    } else if (
+      state.screen.t === "screen" &&
+      state.screen.texture === state.renderState.titleScreen
+    ) {
+      state.screen = {
+        t: "transition",
+        fromScreen: state.renderState.titleScreen,
+        toScreen: state.renderState.introScreen,
+        time: 0,
+      };
+    } else if (
+      state.screen.t === "screen" &&
+      state.screen.texture === state.renderState.introScreen
+    ) {
+      state.screen = {
+        t: "transition",
+        fromScreen: state.renderState.introScreen,
+        toScreen: state.renderState.instructionsScreen,
+        time: 0,
+      };
+    } else if (
+      state.screen.t === "screen" &&
+      state.screen.texture === state.renderState.completeScreen
+    ) {
+      state.screen = {
+        t: "transition",
+        fromScreen: state.renderState.completeScreen,
+        toScreen: undefined,
+        time: 0,
+      };
+      restartGame(state);
+    } else if (state.screen.t === "game" && state.stats.dead === true) {
+      state.screen = {
+        t: "screen",
+        texture: state.renderState.instructionsScreen,
+      };
       restartGame(state);
     }
   }
@@ -19,6 +63,10 @@ export function handleInput(state: GameState, dt: number) {
     state.entities.cursor,
     state.inputs.cursor
   );
+
+  if (state.screen.t !== "game") {
+    return;
+  }
 
   if (state.stats.dead) {
     // Player is dead, they can't do anything!

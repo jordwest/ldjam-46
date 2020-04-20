@@ -13,20 +13,23 @@ export function updateCursor(state: GameState) {
   );
 
   let cursor = "default";
-  let hand = expect(state.components.hand.get(state.entities.player));
 
-  if (hand.holding != null) {
-    cursor = "throw";
-  } else {
-    for (const [id, throwable] of state.components.throwable.entries()) {
-      const throwablePos = state.components.position.get(id);
-      if (throwable.state.t === "resting" && throwablePos) {
-        const distToCursor = Vec2.distance(
-          cursorWorldPos,
-          Vec2.add(throwablePos, { x: 0.5, y: 0.5 })
-        );
-        if (distToCursor < 0.8) {
-          cursor = "pick-up";
+  if (state.screen.t === "game") {
+    let hand = expect(state.components.hand.get(state.entities.player));
+
+    if (hand.holding != null) {
+      cursor = "throw";
+    } else {
+      for (const [id, throwable] of state.components.throwable.entries()) {
+        const throwablePos = state.components.position.get(id);
+        if (throwable.state.t === "resting" && throwablePos) {
+          const distToCursor = Vec2.distance(
+            cursorWorldPos,
+            Vec2.add(throwablePos, { x: 0.5, y: 0.5 })
+          );
+          if (distToCursor < 0.8) {
+            cursor = "pick-up";
+          }
         }
       }
     }
@@ -34,4 +37,3 @@ export function updateCursor(state: GameState) {
 
   sprite.currentAnimation = cursor;
 }
-

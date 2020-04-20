@@ -4,7 +4,6 @@ import { RenderState } from "~rendering/rendering";
 import { EntityId } from "~state/entity";
 import { Entity } from "./entity";
 import { createPlayer } from "./entities/player";
-import { Components } from "~state/components/components";
 import { Audio } from "../audio/audio";
 import { createCamp } from "./entities/camp";
 import { createCursor } from "./entities/cursor";
@@ -13,8 +12,8 @@ import { Vec2 } from "~base/vec2";
 import { expect } from "~base/expect";
 import { Angle } from "~base/angle";
 
-const NUM_CAMPS = 80;
-const NUM_STONES = 250;
+const NUM_CAMPS = 40;
+const NUM_STONES = 200;
 
 const PLAY_AREA_SIZE = {
   x: 200,
@@ -88,7 +87,7 @@ export function init(renderState: RenderState): GameState {
     cameraPosition: { ...startLocation },
     virtualScreenSize: VIRTUAL_SCREEN_SIZE,
     components,
-    screen: { t: "instructions" },
+    screen: { t: "screen", texture: renderState.titleScreen },
     stats: initialStats(),
     inputs: {
       moveUp: false,

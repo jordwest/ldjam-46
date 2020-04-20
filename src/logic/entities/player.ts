@@ -13,7 +13,7 @@ export function createPlayer(id: EntityId, pos: Vec2, components: Components) {
   });
   components.stepper.set(id, {
     accum: 0,
-    perFrame: 0.6,
+    perFrame: 0.9,
     sneaking: false,
     frameSounds: [
       { frame: 1, sound: "footstep" },

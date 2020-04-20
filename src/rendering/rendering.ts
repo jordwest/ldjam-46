@@ -2,6 +2,9 @@ import * as twgl from "twgl.js";
 import { SpriteProgram } from "./shaders/sprite/sprite";
 import spritesheetSrc from "../assets/spritesheet.png";
 import instructionsPng from "../assets/instructions.png";
+import completePng from "../assets/complete.png";
+import introPng from "../assets/intro.png";
+import titlePng from "../assets/title.png";
 import { Vec2 } from "~base/vec2";
 import { ScreenProgram } from "./shaders/screen/screen";
 import { LightingProgram } from "./shaders/lighting/lighting";
@@ -14,7 +17,10 @@ export type RenderState = {
 
   activeFramebuffer: twgl.FramebufferInfo | null;
 
+  titleScreen: WebGLTexture;
   instructionsScreen: WebGLTexture;
+  introScreen: WebGLTexture;
+  completeScreen: WebGLTexture;
   virtualScreen: twgl.FramebufferInfo;
   spriteProgram: SpriteProgram.State;
   lightingProgram: LightingProgram.State;
@@ -41,6 +47,14 @@ export function setup(
     throw new Error("WebGL is null");
   }
 
+  const titleScreen = twgl.createTexture(gl, {
+    src: titlePng,
+    mag: gl.NEAREST,
+  });
+  const introScreen = twgl.createTexture(gl, {
+    src: introPng,
+    mag: gl.NEAREST,
+  });
   const instructionsScreen = twgl.createTexture(gl, {
     src: instructionsPng,
     mag: gl.NEAREST,
@@ -50,6 +64,11 @@ export function setup(
   const sceneProgram = SceneProgram.setup(gl, virtualScreenSize);
   const lightingProgram = LightingProgram.setup(gl);
   const circleProgram = CircleProgram.setup(gl);
+
+  const completeScreen = twgl.createTexture(gl, {
+    src: completePng,
+    mag: gl.NEAREST,
+  });
   const virtualScreen = twgl.createFramebufferInfo(
     gl,
     [
@@ -65,7 +84,10 @@ export function setup(
     gl,
     canvas,
     activeFramebuffer: null,
+    titleScreen,
     instructionsScreen,
+    introScreen,
+    completeScreen,
     virtualScreen,
     spriteProgram,
     lightingProgram,

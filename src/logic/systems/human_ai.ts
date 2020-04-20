@@ -30,9 +30,6 @@ export function runAi(state: GameState, dt: number) {
       brain.state = newState;
       brain.queuedActions = queue;
       brain.currentActionTime = 0;
-      if (newState.t === "listening") {
-        sprite.currentAnimation = "moving";
-      }
     };
 
     for (const [soundId, sound] of state.components.sound.entries()) {
@@ -88,7 +85,7 @@ export function runAi(state: GameState, dt: number) {
         createDialogue(state, pos, "ahh");
       }
       brain.state = { t: "running", awayFrom: { ...playerPos } };
-    } else if (distanceToPlayer <= 15 && playerVisibility > 0.05) {
+    } else if (distanceToPlayer <= 8 && playerVisibility > 0.05) {
       // What IS that?
       if (brain.fear < 0.4) {
         if (brain.state.t !== "investigating") {
@@ -119,7 +116,6 @@ export function runAi(state: GameState, dt: number) {
       );
       brain.targetAngle = Vec2.angleOf(vecToTarget);
       state.components.lightSource.set(entityId, "torch");
-      sprite.currentAnimation = "moving";
       if (distToTarget > 0.1) {
         // Move towards thing
         deltaPos = Vec2.multScalar(vecToTarget, dt * agility.sneakSpeed);
@@ -144,7 +140,6 @@ export function runAi(state: GameState, dt: number) {
       brain.targetAngle = Vec2.angleOf(vecAwayFrom);
       deltaPos = Vec2.multScalar(vecAwayFrom, dt * agility.runSpeed);
       state.components.lightSource.set(entityId, "torch");
-      sprite.currentAnimation = "moving";
     } else if (brain.state.t === "returning") {
       const vecToTarget = Vec2.unitVector(Vec2.subtract(brain.home, pos));
       const distToTarget = Vec2.distance(brain.home, pos);
@@ -153,11 +148,9 @@ export function runAi(state: GameState, dt: number) {
         deltaPos = Vec2.multScalar(vecToTarget, dt * agility.walkSpeed);
         brain.targetAngle = Vec2.angleOf(vecToTarget);
         state.components.lightSource.set(entityId, "torch");
-        sprite.currentAnimation = "moving";
       } else {
         // Back at camp, sit down
         brain.state = { t: "sitting" };
-        sprite.currentAnimation = "sitting";
         state.components.lightSource.delete(entityId);
       }
     }
@@ -170,6 +163,17 @@ export function runAi(state: GameState, dt: number) {
     }
 
     const angleError = Angle.angleBetween(angle, brain.targetAngle);
-    state.components.angle.set(entityId, angle + angleError * 4.0 * dt);
+    const newAngle = Angle.normalize(angle + angleError * 4.0 * dt);
+    state.components.angle.set(entityId, newAngle);
+
+    let facing = "right";
+    if (newAngle > Math.PI / 2 && newAngle < (Math.PI / 2) * 3) {
+      facing = "left";
+    }
+    if (brain.state.t === "sitting") {
+      sprite.currentAnimation = "sitting-" + facing;
+    } else {
+      sprite.currentAnimation = "moving-" + facing;
+    }
   }
 }

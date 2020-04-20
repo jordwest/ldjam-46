@@ -112,7 +112,7 @@ function start() {
       lastTime = time;
     }
 
-    Debug.update();
+    //Debug.update();
 
     requestAnimationFrame(frame);
   }

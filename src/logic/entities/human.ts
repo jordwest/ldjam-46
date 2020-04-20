@@ -9,7 +9,7 @@ export function createHuman(state: GameState, pos: Vec2, angle: number) {
   state.components.position.set(id, pos);
   state.components.sprite.set(id, {
     sprite: Sprites.human,
-    currentAnimation: "sitting",
+    currentAnimation: "sitting-right",
     layer: "sprite",
     frame: 0,
   });
@@ -31,6 +31,7 @@ export function createHuman(state: GameState, pos: Vec2, angle: number) {
     accumulatedFear: 0,
     home: { ...pos },
     sawPlayerAt: undefined,
+    currentActionTime: 0,
     targetAngle: angle,
     queuedActions: [],
     fear: 0,

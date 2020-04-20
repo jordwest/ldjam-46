@@ -2,28 +2,32 @@ import { GameState } from "~state/state";
 import { ScreenProgram } from "~rendering/shaders/screen/screen";
 import { SpriteProgram } from "~/rendering/shaders/sprite/sprite";
 
-function renderInstructionsScreen(state: GameState) {
-  SpriteProgram.renderScreen(
-    state.renderState.spriteProgram,
-    state.renderState.instructionsScreen,
-    1
-  );
+function renderImageScreen(state: GameState, image: WebGLTexture) {
+  SpriteProgram.renderScreen(state.renderState.spriteProgram, image, 1);
 }
 
-const TRANSITION_TIME = 2;
+const TRANSITION_TIME = 1.5;
 export function drawCurrentScreen(state: GameState, dt: number) {
   if (state.screen.t === "transition") {
     state.screen.time += dt;
     const transitionProgress = state.screen.time / TRANSITION_TIME;
-    if (transitionProgress < 0.5) {
-      renderInstructionsScreen(state);
+    if (transitionProgress < 0.5 && state.screen.fromScreen != null) {
+      renderImageScreen(state, state.screen.fromScreen);
     }
+    if (transitionProgress > 0.5 && state.screen.toScreen != null) {
+      renderImageScreen(state, state.screen.toScreen);
+    }
+
     if (transitionProgress >= 1) {
-      state.screen = { t: "game" };
+      if (state.screen.toScreen == null) {
+        state.screen = { t: "game" };
+      } else {
+        state.screen = { t: "screen", texture: state.screen.toScreen };
+      }
     }
   }
-  if (state.screen.t === "instructions") {
-    renderInstructionsScreen(state);
+  if (state.screen.t === "screen") {
+    renderImageScreen(state, state.screen.texture);
   }
 }
 

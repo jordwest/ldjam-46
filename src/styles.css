@@ -3,6 +3,12 @@ body {
   font-family: sans-serif;
 }
 
+.keys {
+  color: #d8f;
+  font-size: 28px;
+  padding: 28px 0;
+}
+
 #game {
   background-color: blue;
   cursor: none;

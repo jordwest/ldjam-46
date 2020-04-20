@@ -20,17 +20,7 @@ export function createFootstep(state: GameState, pos: Vec2) {
     scariness: "slightly-scary",
     audio: "footstep",
     age: 0,
-    volume: 3,
+    volume: 4,
   });
 }
 
-export function createShriek(state: GameState, pos: Vec2) {
-  const id = Entity.mintId(state.entities);
-  state.components.position.set(id, { x: pos.x, y: pos.y - 1.25 });
-  state.components.sound.set(id, {
-    scariness: "terrifying",
-    audio: "shriek",
-    age: 0,
-    volume: 20,
-  });
-}

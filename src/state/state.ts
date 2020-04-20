@@ -27,8 +27,13 @@ export type GameState = {
   t: number;
 
   screen:
-    | { t: "instructions" }
-    | { t: "transition"; time: number }
+    | { t: "screen"; texture: WebGLTexture }
+    | {
+        t: "transition";
+        fromScreen: WebGLTexture | undefined;
+        toScreen: WebGLTexture | undefined;
+        time: number;
+      }
     | { t: "game" };
 
   stats: {
