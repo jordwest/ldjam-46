@@ -32,16 +32,21 @@ export namespace ScreenProgram {
     };
   }
 
-  export function render(state: State, screenTexture: WebGLTexture) {
+  export function render(
+    state: State,
+    screenTexture: WebGLTexture,
+    alpha: number = 1
+  ) {
     const { gl, pixelTexture } = state;
     gl.useProgram(state.programInfo.program);
     twgl.setBuffersAndAttributes(gl, state.programInfo, state.bufferInfo);
     gl.enable(gl.BLEND);
-    gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+    gl.blendFunc(gl.SRC_ALPHA, gl.DST_ALPHA);
 
     twgl.setUniforms(state.programInfo, {
       screenTexture,
       pixelTexture,
+      alpha,
       pixels: [256, 240],
     });
     twgl.drawBufferInfo(gl, state.bufferInfo);

@@ -2,7 +2,6 @@ import { GameState } from "~state/state";
 import { Coords } from "~base/coords";
 import { expect } from "~base/expect";
 import { withFramebuffer } from "~rendering/rendering";
-import { Debug } from "~base/debug";
 
 let data = new Uint8Array(16 * 16 * 4);
 export function calculateVisibility(state: GameState) {
@@ -40,7 +39,6 @@ export function calculateVisibility(state: GameState) {
         visibility =
           (visibility - minVisibility) / (maxVisibility - minVisibility);
         state.components.visibility.set(entityId, visibility);
-        Debug.record("visibility", visibility);
       }
     }
   );

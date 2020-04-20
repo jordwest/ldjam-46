@@ -16,13 +16,13 @@ export function drawAndUpdateSounds(state: GameState, dt: number) {
         Audio.playSound(state.audioState, sound.audio);
       }
     }
-    if (sound.age > 0.8) {
+    if (sound.age > 1.5) {
       Entity.remove(state, entityId);
       continue;
     }
     sound.age += dt;
 
-    const r = sound.age * 400;
+    const r = sound.age * 150;
     const distance = sound.volume * 16;
 
     circles.push({
@@ -31,9 +31,9 @@ export function drawAndUpdateSounds(state: GameState, dt: number) {
         state.cameraPosition,
         state.virtualScreenSize
       ),
-      innerRadius: r,
-      outerRadius: r + r * 0.2,
-      color: [1, 1, 1, 0.2 - r / distance],
+      innerRadius: r - 4,
+      outerRadius: Math.min(r, distance),
+      color: [1, 1, 1, 0.02],
     });
   }
   CircleProgram.render(

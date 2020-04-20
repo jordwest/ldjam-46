@@ -123,4 +123,31 @@ export namespace SpriteProgram {
       twgl.drawBufferInfo(gl, state.bufferInfo);
     }
   }
+
+  /**
+   * Render an image fullscreen
+   */
+  export function renderScreen(
+    state: State,
+    texture: WebGLTexture,
+    alpha: number
+  ) {
+    const { gl } = state;
+    gl.useProgram(state.programInfo.program);
+    twgl.setBuffersAndAttributes(gl, state.programInfo, state.bufferInfo);
+    gl.enable(gl.BLEND);
+    gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+
+    twgl.setUniforms(state.programInfo, {
+      texWidth: [1, 1],
+      texOffset: [0, 0],
+      spriteTexture: texture,
+      viewport: [1, 1],
+      alpha,
+      pos: [0, 0],
+      size: [1, 1],
+      verticalProgress: 1,
+    });
+    twgl.drawBufferInfo(gl, state.bufferInfo);
+  }
 }

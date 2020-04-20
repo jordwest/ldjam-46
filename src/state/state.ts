@@ -24,6 +24,12 @@ export type GameState = {
   audioState: Audio.State;
   cameraPosition: Vec2;
   virtualScreenSize: Vec2;
+  t: number;
+
+  screen:
+    | { t: "instructions" }
+    | { t: "transition"; time: number }
+    | { t: "game" };
 
   stats: {
     fearBar: number;

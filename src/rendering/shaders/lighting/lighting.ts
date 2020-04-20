@@ -45,6 +45,7 @@ export namespace LightingProgram {
     pos: Vec2;
     angle: number;
     lightType: LightType;
+    alpha: number;
   };
 
   const textureForLight = (state: State, t: LightType) => {
@@ -74,6 +75,7 @@ export namespace LightingProgram {
           -((light.pos.y / viewSize.y) * 2 - 1),
         ],
         rotate: light.angle,
+        alpha: light.alpha,
         lightTexture: textureForLight(state, light.lightType),
       });
       twgl.drawBufferInfo(gl, state.bufferInfo);

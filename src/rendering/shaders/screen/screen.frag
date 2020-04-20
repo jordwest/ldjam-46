@@ -3,6 +3,7 @@ precision mediump float;
 uniform sampler2D screenTexture;
 uniform sampler2D pixelTexture;
 uniform vec2 pixels;
+uniform float alpha;
 
 varying vec2 texCoord;
 
@@ -15,5 +16,5 @@ void main() {
   vec4 pixel = texture2D(pixelTexture, texCoord * pixels);
   vec3 withBleed = (col.rgb * 3.0 + bleedCol.rgb) / 4.0;
 
-  gl_FragColor = vec4(withBleed.rgb * pixel.rgb, col.a);
+  gl_FragColor = vec4(withBleed.rgb * pixel.rgb, col.a * alpha);
 }

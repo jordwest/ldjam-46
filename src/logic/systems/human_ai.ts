@@ -1,10 +1,10 @@
 import { GameState } from "~state/state";
 import { expect } from "~base/expect";
 import { Vec2 } from "~base/vec2";
-import { Debug } from "~base/debug";
 import { Angle } from "~base/angle";
 import { createFearParticle } from "~logic/entities/fear_particle";
 import { createDialogue } from "~logic/entities/dialogue";
+import { HumanAction } from "~state/components/components";
 
 export function runAi(state: GameState, dt: number) {
   const playerPos = expect(
@@ -20,15 +20,38 @@ export function runAi(state: GameState, dt: number) {
     const agility = expect(state.components.agility.get(entityId));
     const distanceToPlayer = Vec2.distance(pos, playerPos);
     const sprite = expect(state.components.sprite.get(entityId));
+    brain.currentActionTime += dt;
+
+    // Forget whatever we were doing, start a new activity
+    const overrideState = (
+      newState: HumanAction,
+      queue: HumanAction[] = []
+    ) => {
+      brain.state = newState;
+      brain.queuedActions = queue;
+      brain.currentActionTime = 0;
+    };
 
     for (const [soundId, sound] of state.components.sound.entries()) {
       const soundPos = expect(state.components.position.get(soundId));
       const distance = Vec2.distance(soundPos, pos);
       if (distance < sound.volume && sound.age === 0) {
-        brain.fear += 0.05;
-        if (sound.scariness === "slightly-scary" && brain.fear < 0.4) {
-          createDialogue(state, pos, "what-was-that");
-          brain.state = { t: "investigating", lookingAt: { ...soundPos } };
+        if (sound.scariness === "slightly-scary") {
+          if (brain.state.t === "sitting") {
+            brain.fear += 0.1;
+            createDialogue(state, pos, "what-was-that");
+            overrideState({ t: "listening" });
+          } else if (
+            brain.state.t === "walking" ||
+            brain.state.t === "listening" ||
+            brain.state.t === "searching"
+          ) {
+            brain.fear += 0.2;
+            overrideState({ t: "investigating", lookingAt: { ...soundPos } });
+          } else if (brain.state.t === "investigating") {
+            brain.fear += 0.2;
+            overrideState({ t: "investigating", lookingAt: { ...soundPos } });
+          }
         }
       }
     }
@@ -48,13 +71,13 @@ export function runAi(state: GameState, dt: number) {
       // Holy mother of god
       brain.fear = 1;
       brain.sawPlayerAt = { ...playerPos };
-    } else if (distanceToPlayer < 1) {
+    } else if (distanceToPlayer < 0.8) {
       // IT TOUCHED ME
       brain.fear = 0.4;
 
       brain.state = { t: "investigating", lookingAt: { ...playerPos } };
       brain.sawPlayerAt = { ...playerPos };
-    } else if (distanceToPlayer < 6 && playerVisibility > 0.4) {
+    } else if (distanceToPlayer < 6 && playerVisibility > 0.5) {
       // Oh shit, that's a monster, RUN!
       brain.fear = Math.max(brain.fear, 0.7);
       if (brain.state.t !== "running") {
@@ -116,7 +139,5 @@ export function runAi(state: GameState, dt: number) {
 
     const angleError = Angle.angleBetween(angle, brain.targetAngle);
     state.components.angle.set(entityId, angle + angleError * 4.0 * dt);
-
-    Debug.record("human brain", brain);
   }
 }

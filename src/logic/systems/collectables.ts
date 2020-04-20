@@ -10,6 +10,10 @@ export function collectCollectables(state: GameState, dt: number) {
     state.components.position.get(state.entities.player)
   );
 
+  if (state.stats.dead) {
+    return;
+  }
+
   for (const [
     entityId,
     collectable,

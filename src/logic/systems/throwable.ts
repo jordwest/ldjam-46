@@ -17,7 +17,7 @@ export function updateThrowables(state: GameState, dt: number) {
       const pos = expect(state.components.position.get(throwableId));
       const distanceRemaining = Vec2.distance(pos, throwable.state.target);
 
-      if (distanceRemaining < 0.3) {
+      if (distanceRemaining < 0.6) {
         // Landed
         createStoneLanding(state, pos);
         throwable.state = { t: "resting" };

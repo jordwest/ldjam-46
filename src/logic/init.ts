@@ -21,16 +21,13 @@ const PLAY_AREA_SIZE = {
   y: 200,
 };
 
-export function init(renderState: RenderState): GameState {
-  const randomSource = new Uint8Array(1024);
+const initialStats = () => ({
+  fearBar: 0.1,
+  dead: false,
+});
 
-  for (let i = 0; i < randomSource.length; i++) {
-    randomSource[i] = Math.floor(Math.random() * 255);
-  }
-
-  const entities = { nextId: 0 as EntityId };
-  const player = Entity.mintId(entities);
-  const components: Components = {
+const initEcs = () => {
+  const components = {
     position: new Map(),
     sprite: new Map(),
     agility: new Map(),
@@ -49,22 +46,50 @@ export function init(renderState: RenderState): GameState {
   };
 
   const startLocation = Vec2.divScalar(PLAY_AREA_SIZE, 2);
+
+  const entityBootstrap = { nextId: 0 as EntityId };
+  const player = Entity.mintId(entityBootstrap);
   createPlayer(player, startLocation, components);
-  const cursor = createCursor(entities, components);
+  const cursor = createCursor(entityBootstrap, components);
+
+  return {
+    entities: { ...entityBootstrap, player, cursor },
+    components,
+    startLocation,
+  };
+};
+
+export function restartGame(state: GameState) {
+  state.stats = initialStats();
+  const { entities, components, startLocation } = initEcs();
+  state.entities = entities;
+  state.components = components;
+  state.cameraPosition = { ...startLocation };
+  generateEntities(state, PLAY_AREA_SIZE);
+}
+
+export function init(renderState: RenderState): GameState {
+  const randomSource = new Uint8Array(1024);
+
+  for (let i = 0; i < randomSource.length; i++) {
+    randomSource[i] = Math.floor(Math.random() * 255);
+  }
+
   const audioState = Audio.init();
   Audio.playSound(audioState, "ambience");
+
+  const { entities, components, startLocation } = initEcs();
 
   const state: GameState = {
     renderState,
     audioState,
     randomSource,
+    t: 0,
     cameraPosition: { ...startLocation },
     virtualScreenSize: VIRTUAL_SCREEN_SIZE,
     components,
-    stats: {
-      fearBar: 0.9,
-      dead: false,
-    },
+    screen: { t: "instructions" },
+    stats: initialStats(),
     inputs: {
       moveUp: false,
       moveLeft: false,
@@ -74,11 +99,7 @@ export function init(renderState: RenderState): GameState {
       cursor: { x: 0, y: 0 },
       event: undefined,
     },
-    entities: {
-      ...entities,
-      player,
-      cursor,
-    },
+    entities,
   };
 
   generateEntities(state, PLAY_AREA_SIZE);

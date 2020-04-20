@@ -7,9 +7,9 @@ export function createStoneLanding(state: GameState, pos: Vec2) {
   state.components.position.set(id, { x: pos.x, y: pos.y });
   state.components.sound.set(id, {
     scariness: "slightly-scary",
-    audio: "footstep",
+    audio: "stone",
     age: 0,
-    volume: 9,
+    volume: 6,
   });
 }
 
@@ -20,7 +20,7 @@ export function createFootstep(state: GameState, pos: Vec2) {
     scariness: "slightly-scary",
     audio: "footstep",
     age: 0,
-    volume: 5,
+    volume: 3,
   });
 }
 

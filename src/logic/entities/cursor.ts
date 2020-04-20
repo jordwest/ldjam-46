@@ -12,7 +12,7 @@ export function createCursor(
     sprite: Sprites.cursor,
     currentAnimation: "default",
     frame: 0,
-    layer: "overlay",
+    layer: "cursor",
   });
   return id;
 }

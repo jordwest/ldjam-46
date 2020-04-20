@@ -1,8 +1,19 @@
 import { GameState } from "~state/state";
 import { expect } from "~base/expect";
 import { Vec2 } from "~base/vec2";
+import { restartGame } from "~logic/init";
 
 export function handleInput(state: GameState, dt: number) {
+  if (state.inputs.event?.t === "click") {
+    if (state.screen.t === "instructions") {
+      state.screen = { t: "transition", time: 0 };
+    }
+    if (state.screen.t === "game" && state.stats.dead === true) {
+      state.screen = { t: "instructions" };
+      restartGame(state);
+    }
+  }
+
   // Update cursor positions
   state.components.screenPosition.set(
     state.entities.cursor,

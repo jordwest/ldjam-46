@@ -1,6 +1,7 @@
 import * as twgl from "twgl.js";
 import { SpriteProgram } from "./shaders/sprite/sprite";
 import spritesheetSrc from "../assets/spritesheet.png";
+import instructionsPng from "../assets/instructions.png";
 import { Vec2 } from "~base/vec2";
 import { ScreenProgram } from "./shaders/screen/screen";
 import { LightingProgram } from "./shaders/lighting/lighting";
@@ -13,6 +14,7 @@ export type RenderState = {
 
   activeFramebuffer: twgl.FramebufferInfo | null;
 
+  instructionsScreen: WebGLTexture;
   virtualScreen: twgl.FramebufferInfo;
   spriteProgram: SpriteProgram.State;
   lightingProgram: LightingProgram.State;
@@ -33,12 +35,16 @@ export function setup(
   canvas: HTMLCanvasElement,
   virtualScreenSize: Vec2
 ): RenderState {
-  const gl = canvas.getContext("webgl");
+  const gl = canvas.getContext("webgl", { premultipliedAlpha: false });
   if (!gl) {
     alert("Sorry, I couldn't get WebGL running in your browser");
     throw new Error("WebGL is null");
   }
 
+  const instructionsScreen = twgl.createTexture(gl, {
+    src: instructionsPng,
+    mag: gl.NEAREST,
+  });
   const spriteProgram = SpriteProgram.setup(gl, SPRITESHEET);
   const screenProgram = ScreenProgram.setup(gl);
   const sceneProgram = SceneProgram.setup(gl, virtualScreenSize);
@@ -59,6 +65,7 @@ export function setup(
     gl,
     canvas,
     activeFramebuffer: null,
+    instructionsScreen,
     virtualScreen,
     spriteProgram,
     lightingProgram,
@@ -119,13 +126,6 @@ export function prepareSceneColors(renderState: RenderState) {
 }
 
 export function renderScene(renderState: RenderState) {
-  ScreenProgram.render(
-    renderState.screenProgram,
-    renderState.virtualScreen.attachments[0]
-  );
-}
-
-export function renderScreen(renderState: RenderState) {
   ScreenProgram.render(
     renderState.screenProgram,
     renderState.virtualScreen.attachments[0]

@@ -2,7 +2,6 @@ import { GameState } from "~state/state";
 import { renderGrass } from "./systems/render_grass";
 import {
   prepareScreen,
-  renderScreen,
   prepareVirtualScreen,
   prepareSceneLighting,
   prepareSceneColors,
@@ -14,7 +13,6 @@ import { SceneProgram } from "~rendering/shaders/scene/scene";
 import { drawTorches } from "./systems/draw_torches";
 import { calculateVisibility } from "./systems/calculate_visibility";
 import { runAi } from "./systems/human_ai";
-import { Debug } from "~base/debug";
 import { updateLifetimes } from "./systems/lifetime";
 import { updateParticles } from "./systems/particles";
 import { collectCollectables } from "./systems/collectables";
@@ -24,11 +22,12 @@ import { updateThrowables } from "./systems/throwable";
 import { updateCursor } from "./systems/cursor";
 import { drawUi } from "./systems/draw_ui";
 import { consumeFear } from "./systems/consumption";
+import { drawCurrentScreen, renderScreen } from "./systems/screen";
 
 export function runAllSystems(state: GameState, dt: number) {
-  Debug.measure("calculateVisibility", () => {
-    calculateVisibility(state);
-  });
+  state.t += dt;
+
+  calculateVisibility(state);
 
   updateLifetimes(state, dt);
   updateParticles(state, dt);
@@ -37,37 +36,33 @@ export function runAllSystems(state: GameState, dt: number) {
   updateCursor(state);
   collectCollectables(state, dt);
 
-  Debug.measure("input", () => {
-    handleInput(state, dt);
-  });
+  handleInput(state, dt);
 
   advanceStepper(state);
 
-  Debug.measure("camera", () => {
-    moveCamera(state, dt);
-  });
+  moveCamera(state, dt);
 
-  Debug.measure("ai", () => {
-    runAi(state, dt);
-  });
+  runAi(state, dt);
 
-  Debug.measure("rendering", () => {
-    prepareSceneColors(state.renderState);
-    renderGrass(state);
-    renderSprites(state, dt, (sprite) => sprite.layer === "sprite");
+  prepareSceneColors(state.renderState);
+  renderGrass(state);
+  renderSprites(state, dt, (sprite) => sprite.layer === "sprite");
 
-    prepareSceneLighting(state.renderState);
-    drawTorches(state);
+  prepareSceneLighting(state.renderState);
+  drawTorches(state);
 
-    prepareVirtualScreen(state.renderState);
-    SceneProgram.render(state.renderState.sceneProgram);
-    drawAndUpdateSounds(state, dt);
-    drawUi(state);
-    renderSprites(state, dt, (sprite) => sprite.layer === "overlay");
+  prepareVirtualScreen(state.renderState);
+  SceneProgram.render(state.renderState.sceneProgram);
+  drawAndUpdateSounds(state, dt);
+  drawUi(state);
+  renderSprites(state, dt, (sprite) => sprite.layer === "overlay");
 
-    prepareScreen(state.renderState);
-    renderScreen(state.renderState);
-  });
+  drawCurrentScreen(state, dt);
+
+  renderSprites(state, dt, (sprite) => sprite.layer === "cursor");
+
+  prepareScreen(state.renderState);
+  renderScreen(state);
 
   // Sorry, you only get one chance to process an input event
   state.inputs.event = undefined;

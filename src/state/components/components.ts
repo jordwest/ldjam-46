@@ -7,7 +7,7 @@ export type SpriteState = {
   sprite: Sprite;
   currentAnimation: string;
   frame: number;
-  layer: "sprite" | "overlay";
+  layer: "sprite" | "overlay" | "cursor";
   autoplay?: {
     timePerFrame: number;
   };
@@ -19,20 +19,26 @@ export type Agility = {
   runSpeed: number;
 };
 
+export type HumanAction =
+  | {
+      t: "sitting";
+    }
+  | { t: "walking"; destination: Vec2 }
+  | { t: "listening" }
+  | { t: "investigating"; lookingAt: Vec2 }
+  | { t: "searching"; angle: number }
+  | { t: "running"; awayFrom: Vec2 }
+  | { t: "frozen" };
+
 export type Brain = {
   fear: number;
+  home: Vec2;
   accumulatedFear: number;
   sawPlayerAt: Vec2 | undefined;
   targetAngle: number;
-  state:
-    | {
-        t: "sitting";
-      }
-    | { t: "walking"; destination: Vec2 }
-    | { t: "listening" }
-    | { t: "investigating"; lookingAt: Vec2 }
-    | { t: "running"; awayFrom: Vec2 }
-    | { t: "frozen" };
+  queuedActions: HumanAction[];
+  state: HumanAction;
+  currentActionTime: number;
 };
 
 type Collectable = {
