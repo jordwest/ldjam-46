@@ -22,13 +22,41 @@ export namespace Sprites {
           ],
         },
       ],
+      [
+        "dead",
+        {
+          tile: [{ x: 3, y: 8 }],
+        },
+      ],
     ]),
+  };
+
+  export const cursor: Sprite = {
+    size: { x: 1, y: 1 },
+    sequences: new Map([
+      ["default", { tile: [{ x: 13, y: 8 }] }],
+      ["pick-up", { tile: [{ x: 13, y: 9 }] }],
+      ["throw", { tile: [{ x: 13, y: 10 }] }],
+    ]),
+  };
+
+  export const stone: Sprite = {
+    size: { x: 1, y: 1 },
+    sequences: new Map([["default", { tile: [{ x: 11, y: 0 }] }]]),
   };
 
   export const human: Sprite = {
     size: { x: 1, y: 1 },
     sequences: new Map([
-      ["standing", { tile: [{ x: 0, y: 2 }] }],
+      [
+        "moving",
+        {
+          tile: [
+            { x: 0, y: 2 },
+            { x: 1, y: 2 },
+          ],
+        },
+      ],
       ["sitting", { tile: [{ x: 0, y: 3 }] }],
     ]),
   };
@@ -36,6 +64,11 @@ export namespace Sprites {
   export const dialogueLook: Sprite = {
     size: { x: 1, y: 1 },
     sequences: new Map([["default", { tile: [{ x: 11, y: 2 }] }]]),
+  };
+
+  export const dialogueWhatWasThat: Sprite = {
+    size: { x: 1, y: 1 },
+    sequences: new Map([["default", { tile: [{ x: 11, y: 5 }] }]]),
   };
 
   export const dialogueAhh: Sprite = {
@@ -78,8 +111,10 @@ export namespace Sprites {
         "default",
         {
           tile: [
-            { x: 11, y: 0 },
-            { x: 11, y: 1 },
+            { x: 12, y: 0 },
+            { x: 12, y: 1 },
+            { x: 12, y: 2 },
+            { x: 12, y: 1 },
           ],
         },
       ],

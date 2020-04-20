@@ -62,6 +62,7 @@ export namespace SpriteProgram {
     tile: Vec2;
     size: Vec2;
     alpha?: number;
+    verticalProgress?: number;
     zOrder: number;
   };
 
@@ -117,6 +118,7 @@ export namespace SpriteProgram {
           state.spritesheetInfo.tileWidth * tileCountX,
           state.spritesheetInfo.tileHeight * tileCountY,
         ],
+        verticalProgress: sprite.verticalProgress ? sprite.verticalProgress : 1,
       });
       twgl.drawBufferInfo(gl, state.bufferInfo);
     }

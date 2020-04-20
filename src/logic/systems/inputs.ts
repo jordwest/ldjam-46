@@ -3,6 +3,17 @@ import { expect } from "~base/expect";
 import { Vec2 } from "~base/vec2";
 
 export function handleInput(state: GameState, dt: number) {
+  // Update cursor positions
+  state.components.screenPosition.set(
+    state.entities.cursor,
+    state.inputs.cursor
+  );
+
+  if (state.stats.dead) {
+    // Player is dead, they can't do anything!
+    return;
+  }
+
   const playerId = state.entities.player;
   const pos = expect(state.components.position.get(playerId));
   const agility = expect(state.components.agility.get(playerId));
@@ -22,11 +33,13 @@ export function handleInput(state: GameState, dt: number) {
   }
 
   if (Vec2.len(direction) > 0) {
-    const movement = agility.walkSpeed * dt;
+    const speed = state.inputs.sneak ? agility.sneakSpeed : agility.walkSpeed;
+    const movement = speed * dt;
     const dPos = Vec2.multScalar(Vec2.unitVector(direction), movement);
 
     const stepper = expect(state.components.stepper.get(playerId));
     stepper.accum += movement;
+    stepper.sneaking = state.inputs.sneak;
 
     state.components.position.set(playerId, Vec2.add(pos, dPos));
   } else {

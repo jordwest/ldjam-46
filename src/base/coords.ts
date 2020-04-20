@@ -13,4 +13,12 @@ export namespace Coords {
       },
       1
     );
+  export const virtualScreenToWorld = (
+    screenCoord: Vec2,
+    cameraPosition: Vec2,
+    virtualScreenSize: Vec2
+  ): Vec2 => ({
+    x: (screenCoord.x - virtualScreenSize.x / 2) / 16 + cameraPosition.x,
+    y: (screenCoord.y - virtualScreenSize.y / 2) / 16 + cameraPosition.y,
+  });
 }

@@ -13,7 +13,7 @@ export function createFire(state: GameState, pos: Vec2) {
     layer: "sprite",
     sprite: Sprites.fire,
     autoplay: {
-      timePerFrame: 0.2,
+      timePerFrame: 0.1,
     },
   });
 }

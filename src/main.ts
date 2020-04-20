@@ -32,6 +32,9 @@ function start() {
       case "ArrowRight":
         gameState.inputs.moveRight = true;
         break;
+      case "Shift":
+        gameState.inputs.sneak = true;
+        break;
       default:
         console.log("unhandled key", e.key);
         handled = false;
@@ -63,12 +66,30 @@ function start() {
       case "ArrowRight":
         gameState.inputs.moveRight = false;
         break;
+      case "Shift":
+        gameState.inputs.sneak = false;
+        break;
       default:
         handled = false;
     }
     if (handled) {
       e.preventDefault();
     }
+  });
+
+  const canvasToVirtualScreen = (e: { offsetX: number; offsetY: number }) => ({
+    x: e.offsetX * (gameState.virtualScreenSize.x / canvas.width),
+    y: e.offsetY * (gameState.virtualScreenSize.y / canvas.height),
+  });
+
+  canvas.addEventListener("mousedown", (e) => {
+    gameState.inputs.event = {
+      t: "click",
+      pos: canvasToVirtualScreen(e),
+    };
+  });
+  canvas.addEventListener("mousemove", (e) => {
+    gameState.inputs.cursor = canvasToVirtualScreen(e);
   });
 
   let lastTime: number | undefined;

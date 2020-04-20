@@ -36,7 +36,7 @@ export function renderSprites(
       let screenPos = state.components.screenPosition.get(id);
       if (screenPos == null) {
         // Nope, how can we know where to render it then?!
-        return;
+        continue;
       }
       pos = screenPos;
 

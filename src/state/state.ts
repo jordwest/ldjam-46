@@ -1,14 +1,22 @@
 import { Vec2 } from "~base/vec2";
 import { Components } from "./components/components";
 import { RenderState } from "~rendering/rendering";
-import { EntityId } from "./entity";
+import { Entities } from "./entity";
 import { Audio } from "~audio/audio";
+
+type InputEvent = {
+  t: "click";
+  pos: Vec2;
+};
 
 export type Inputs = {
   moveLeft: boolean;
   moveRight: boolean;
   moveUp: boolean;
   moveDown: boolean;
+  sneak: boolean;
+  cursor: Vec2;
+  event: InputEvent | undefined;
 };
 
 export type GameState = {
@@ -17,14 +25,16 @@ export type GameState = {
   cameraPosition: Vec2;
   virtualScreenSize: Vec2;
 
+  stats: {
+    fearBar: number;
+    dead: boolean;
+  };
+
   components: Components;
 
   randomSource: Uint8Array;
 
   inputs: Inputs;
 
-  entities: {
-    nextId: EntityId;
-    player: EntityId;
-  };
+  entities: Entities;
 };

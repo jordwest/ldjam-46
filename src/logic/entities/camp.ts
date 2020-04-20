@@ -15,6 +15,7 @@ export function createCamp(state: GameState, pos: Vec2) {
       pos,
       Vec2.multScalar(Angle.toVec(angleFromFire), 3)
     );
-    createHuman(state, humanPos);
+
+    createHuman(state, humanPos, angleFromFire - Math.PI);
   }
 }

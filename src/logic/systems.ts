@@ -19,6 +19,11 @@ import { updateLifetimes } from "./systems/lifetime";
 import { updateParticles } from "./systems/particles";
 import { collectCollectables } from "./systems/collectables";
 import { advanceStepper } from "./systems/stepper";
+import { drawAndUpdateSounds } from "./systems/sound";
+import { updateThrowables } from "./systems/throwable";
+import { updateCursor } from "./systems/cursor";
+import { drawUi } from "./systems/draw_ui";
+import { consumeFear } from "./systems/consumption";
 
 export function runAllSystems(state: GameState, dt: number) {
   Debug.measure("calculateVisibility", () => {
@@ -26,9 +31,10 @@ export function runAllSystems(state: GameState, dt: number) {
   });
 
   updateLifetimes(state, dt);
-  Debug.measure("particles", () => {
-    updateParticles(state, dt);
-  });
+  updateParticles(state, dt);
+  updateThrowables(state, dt);
+  consumeFear(state, dt);
+  updateCursor(state);
   collectCollectables(state, dt);
 
   Debug.measure("input", () => {
@@ -55,9 +61,14 @@ export function runAllSystems(state: GameState, dt: number) {
 
     prepareVirtualScreen(state.renderState);
     SceneProgram.render(state.renderState.sceneProgram);
+    drawAndUpdateSounds(state, dt);
+    drawUi(state);
     renderSprites(state, dt, (sprite) => sprite.layer === "overlay");
 
     prepareScreen(state.renderState);
     renderScreen(state.renderState);
   });
+
+  // Sorry, you only get one chance to process an input event
+  state.inputs.event = undefined;
 }

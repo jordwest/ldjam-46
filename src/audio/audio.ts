@@ -5,6 +5,7 @@ import foot3 from "../assets/footstep3.wav";
 import foot4 from "../assets/footstep4.wav";
 import collectFear from "../assets/collect_fear3.wav";
 import ambience from "../assets/ambience.wav";
+import shriek from "../assets/phobos_shriek.wav";
 import { expect } from "~base/expect";
 
 export namespace Audio {
@@ -32,13 +33,19 @@ export namespace Audio {
     sounds.set("collectFear", {
       variants: [new Howl({ src: [collectFear] })],
     });
+    sounds.set("shriek", {
+      variants: [new Howl({ src: [shriek] })],
+    });
 
     return { sounds };
   }
 
-  export function playSound(state: State, sound: string) {
+  export function playSound(state: State, sound: string, volume: number = 1.0) {
     const howl = expect(state.sounds.get(sound));
     const variant = Math.floor(Math.random() * howl.variants.length);
-    howl.variants[variant].play();
+    const vol = volume;
+
+    const id = howl.variants[variant].play();
+    howl.variants[variant].volume(vol, id);
   }
 }

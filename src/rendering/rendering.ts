@@ -5,6 +5,7 @@ import { Vec2 } from "~base/vec2";
 import { ScreenProgram } from "./shaders/screen/screen";
 import { LightingProgram } from "./shaders/lighting/lighting";
 import { SceneProgram } from "./shaders/scene/scene";
+import { CircleProgram } from "./shaders/circle/circle";
 
 export type RenderState = {
   gl: WebGLRenderingContext;
@@ -15,6 +16,7 @@ export type RenderState = {
   virtualScreen: twgl.FramebufferInfo;
   spriteProgram: SpriteProgram.State;
   lightingProgram: LightingProgram.State;
+  circleProgram: CircleProgram.State;
   screenProgram: ScreenProgram.State;
   sceneProgram: SceneProgram.State;
 };
@@ -41,6 +43,7 @@ export function setup(
   const screenProgram = ScreenProgram.setup(gl);
   const sceneProgram = SceneProgram.setup(gl, virtualScreenSize);
   const lightingProgram = LightingProgram.setup(gl);
+  const circleProgram = CircleProgram.setup(gl);
   const virtualScreen = twgl.createFramebufferInfo(
     gl,
     [
@@ -59,6 +62,7 @@ export function setup(
     virtualScreen,
     spriteProgram,
     lightingProgram,
+    circleProgram,
     sceneProgram,
     screenProgram,
   };

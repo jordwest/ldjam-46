@@ -7,6 +7,8 @@ import { createPlayer } from "./entities/player";
 import { Components } from "~state/components/components";
 import { Audio } from "../audio/audio";
 import { createCamp } from "./entities/camp";
+import { createCursor } from "./entities/cursor";
+import { createStone } from "./entities/stone";
 
 export function init(renderState: RenderState): GameState {
   const randomSource = new Uint8Array(1024);
@@ -30,10 +32,14 @@ export function init(renderState: RenderState): GameState {
     lifetime: new Map(),
     screenPosition: new Map(),
     stepper: new Map(),
+    sound: new Map(),
+    throwable: new Map(),
+    hand: new Map(),
   };
 
   const startLocation = { x: 30, y: 30 };
   createPlayer(player, startLocation, components);
+  const cursor = createCursor(entities, components);
   const audioState = Audio.init();
   Audio.playSound(audioState, "ambience");
 
@@ -44,24 +50,28 @@ export function init(renderState: RenderState): GameState {
     cameraPosition: { ...startLocation },
     virtualScreenSize: VIRTUAL_SCREEN_SIZE,
     components,
+    stats: {
+      fearBar: 0.9,
+    },
     inputs: {
       moveUp: false,
       moveLeft: false,
       moveDown: false,
       moveRight: false,
+      sneak: false,
+      cursor: { x: 0, y: 0 },
+      event: undefined,
     },
     entities: {
       ...entities,
       player,
+      cursor,
     },
   };
 
-  /*
-  createHuman(state, { x: 35, y: 32 });
-  createFire(state, { x: 40, y: 29 });
-  */
-
   createCamp(state, { x: 40, y: 29 });
+
+  createStone(state, { x: 35, y: 30 });
 
   return state;
 }

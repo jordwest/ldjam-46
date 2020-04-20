@@ -19,6 +19,19 @@ export function runAi(state: GameState, dt: number) {
     const angle = expect(state.components.angle.get(entityId));
     const agility = expect(state.components.agility.get(entityId));
     const distanceToPlayer = Vec2.distance(pos, playerPos);
+    const sprite = expect(state.components.sprite.get(entityId));
+
+    for (const [soundId, sound] of state.components.sound.entries()) {
+      const soundPos = expect(state.components.position.get(soundId));
+      const distance = Vec2.distance(soundPos, pos);
+      if (distance < sound.volume && sound.age === 0) {
+        brain.fear += 0.05;
+        if (sound.scariness === "slightly-scary" && brain.fear < 0.4) {
+          createDialogue(state, pos, "what-was-that");
+          brain.state = { t: "investigating", lookingAt: { ...soundPos } };
+        }
+      }
+    }
 
     brain.fear = Math.max(0, brain.fear - 0.01 * dt);
     brain.accumulatedFear += brain.fear * dt * 7 * Math.random();
@@ -79,6 +92,7 @@ export function runAi(state: GameState, dt: number) {
       );
       brain.targetAngle = Vec2.angleOf(vecToTarget);
       state.components.lightSource.set(entityId, "torch");
+      sprite.currentAnimation = "moving";
       if (distToTarget > 1) {
         // Move towards thing
         deltaPos = Vec2.multScalar(vecToTarget, dt * agility.sneakSpeed);
@@ -90,8 +104,13 @@ export function runAi(state: GameState, dt: number) {
       brain.targetAngle = Vec2.angleOf(vecAwayFrom);
       deltaPos = Vec2.multScalar(vecAwayFrom, dt * agility.runSpeed);
       state.components.lightSource.set(entityId, "torch");
+      sprite.currentAnimation = "moving";
     }
+    const stepper = state.components.stepper.get(entityId);
     if (deltaPos != null) {
+      if (stepper != null) {
+        stepper.accum += Vec2.distance({ x: 0, y: 0 }, deltaPos);
+      }
       state.components.position.set(entityId, Vec2.add(pos, deltaPos));
     }
 

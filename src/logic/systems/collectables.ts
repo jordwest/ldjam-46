@@ -30,6 +30,10 @@ export function collectCollectables(state: GameState, dt: number) {
 
         screenPos.y -= 21;
         Audio.playSound(state.audioState, "collectFear");
+        state.stats.fearBar += 0.05;
+        if (state.stats.fearBar > 1) {
+          state.stats.fearBar = 1;
+        }
         if (sprite && sprite.sprite.sequences.has("collected")) {
           sprite.currentAnimation = "collected";
         }
@@ -40,7 +44,7 @@ export function collectCollectables(state: GameState, dt: number) {
       }
     } else if (collectable.state === "collecting") {
       const pos = expect(state.components.screenPosition.get(entityId));
-      const target = { x: state.virtualScreenSize.x - 22, y: 6 };
+      const target = { x: state.virtualScreenSize.x - 32, y: 0 };
       const vecToTarget = Vec2.subtract(target, pos);
       const dist = Vec2.distance(pos, target);
       if (dist < 3) {

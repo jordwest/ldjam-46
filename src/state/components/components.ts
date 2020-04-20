@@ -1,6 +1,7 @@
 import { Vec2 } from "~base/vec2";
 import { Sprite } from "~state/sprite";
 import { EntityId } from "~state/entity";
+import { Audio } from "~audio/audio";
 
 export type SpriteState = {
   sprite: Sprite;
@@ -53,7 +54,36 @@ type Lifetime = {
 type Stepper = {
   perFrame: number;
   frameSounds: { frame: number; sound: string }[];
+  sneaking: boolean;
+  producesSound: boolean;
   accum: number;
+};
+
+/**
+ * Represents an in-game sound that NPCs can hear.
+ * Does not necessarily correspond to audio played through the speakers.
+ */
+type Sound = {
+  scariness: "not-scary" | "slightly-scary" | "terrifying";
+  // The audio clip to play (if any)
+  audio: string | undefined;
+  age: number;
+  // How many tiles this sound can travel
+  volume: number;
+};
+
+type Throwable = {
+  state:
+    | { t: "resting" }
+    | { t: "picked-up" }
+    | { t: "airborne"; target: Vec2 };
+};
+
+/**
+ * Has a hand that can pick up throwables
+ */
+type Hand = {
+  holding: EntityId | undefined;
 };
 
 export type Components = {
@@ -69,4 +99,7 @@ export type Components = {
   stepper: Map<EntityId, Stepper>;
   collectable: Map<EntityId, Collectable>;
   particle: Map<EntityId, Particle>;
+  sound: Map<EntityId, Sound>;
+  throwable: Map<EntityId, Throwable>;
+  hand: Map<EntityId, Hand>;
 };
