@@ -34,7 +34,7 @@ export function collectCollectables(state: GameState, dt: number) {
 
         screenPos.y -= 21;
         Audio.playSound(state.audioState, "collectFear");
-        state.stats.fearBar += 0.05;
+        state.stats.fearBar += 0.02;
         if (state.stats.fearBar > 1) {
           state.stats.fearBar = 1;
         }

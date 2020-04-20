@@ -27,6 +27,18 @@ export function drawUi(state: GameState) {
     },
   ];
 
+  if (state.stats.dead) {
+    sprites.push({
+      tile: { x: 6, y: 14 },
+      size: { x: 4, y: 2 },
+      position: {
+        x: virtualScreenSize.x / 2 - 32,
+        y: virtualScreenSize.y / 2 - 16,
+      },
+      zOrder: 5,
+    });
+  }
+
   SpriteProgram.render(
     state.renderState.spriteProgram,
     state.virtualScreenSize,

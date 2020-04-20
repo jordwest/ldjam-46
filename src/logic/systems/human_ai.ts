@@ -30,6 +30,9 @@ export function runAi(state: GameState, dt: number) {
       brain.state = newState;
       brain.queuedActions = queue;
       brain.currentActionTime = 0;
+      if (newState.t === "listening") {
+        sprite.currentAnimation = "moving";
+      }
     };
 
     for (const [soundId, sound] of state.components.sound.entries()) {
@@ -74,6 +77,7 @@ export function runAi(state: GameState, dt: number) {
     } else if (distanceToPlayer < 0.8) {
       // IT TOUCHED ME
       brain.fear = 0.4;
+      createDialogue(state, pos, "ahh");
 
       brain.state = { t: "investigating", lookingAt: { ...playerPos } };
       brain.sawPlayerAt = { ...playerPos };
@@ -116,9 +120,22 @@ export function runAi(state: GameState, dt: number) {
       brain.targetAngle = Vec2.angleOf(vecToTarget);
       state.components.lightSource.set(entityId, "torch");
       sprite.currentAnimation = "moving";
-      if (distToTarget > 1) {
+      if (distToTarget > 0.1) {
         // Move towards thing
         deltaPos = Vec2.multScalar(vecToTarget, dt * agility.sneakSpeed);
+      } else {
+        if (Vec2.distance(pos, brain.home) > 20) {
+          // Been investigating far enough and haven't found anything, head back to camp
+          brain.state = { t: "returning" };
+        } else {
+          // Pick a new nearby spot to look
+          const newAngle = brain.targetAngle + (Math.random() - 0.5);
+          const newTarget = Vec2.add(
+            brain.state.lookingAt,
+            Vec2.multScalar(Angle.toVec(newAngle), 3)
+          );
+          brain.state.lookingAt = newTarget;
+        }
       }
     } else if (brain.state.t === "running") {
       const vecAwayFrom = Vec2.unitVector(
@@ -128,6 +145,21 @@ export function runAi(state: GameState, dt: number) {
       deltaPos = Vec2.multScalar(vecAwayFrom, dt * agility.runSpeed);
       state.components.lightSource.set(entityId, "torch");
       sprite.currentAnimation = "moving";
+    } else if (brain.state.t === "returning") {
+      const vecToTarget = Vec2.unitVector(Vec2.subtract(brain.home, pos));
+      const distToTarget = Vec2.distance(brain.home, pos);
+      if (distToTarget > 0.1) {
+        // Move towards home
+        deltaPos = Vec2.multScalar(vecToTarget, dt * agility.walkSpeed);
+        brain.targetAngle = Vec2.angleOf(vecToTarget);
+        state.components.lightSource.set(entityId, "torch");
+        sprite.currentAnimation = "moving";
+      } else {
+        // Back at camp, sit down
+        brain.state = { t: "sitting" };
+        sprite.currentAnimation = "sitting";
+        state.components.lightSource.delete(entityId);
+      }
     }
     const stepper = state.components.stepper.get(entityId);
     if (deltaPos != null) {

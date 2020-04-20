@@ -24,6 +24,7 @@ export type HumanAction =
       t: "sitting";
     }
   | { t: "walking"; destination: Vec2 }
+  | { t: "returning" }
   | { t: "listening" }
   | { t: "investigating"; lookingAt: Vec2 }
   | { t: "searching"; angle: number }

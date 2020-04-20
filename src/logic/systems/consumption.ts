@@ -8,7 +8,7 @@ export function consumeFear(state: GameState, dt: number) {
     return;
   }
 
-  state.stats.fearBar -= 0.01 * dt;
+  state.stats.fearBar -= 0.003 * dt;
   if (state.stats.fearBar <= 0) {
     const sprite = expect(state.components.sprite.get(state.entities.player));
     Debug.record("currentAnimation", sprite.currentAnimation);

@@ -22,7 +22,7 @@ const PLAY_AREA_SIZE = {
 };
 
 const initialStats = () => ({
-  fearBar: 0.1,
+  fearBar: 0.4,
   dead: false,
 });
 
