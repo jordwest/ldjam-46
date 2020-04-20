@@ -34,9 +34,9 @@ export namespace Audio {
     sounds.set("ambience", {
       variants: [new Howl({ src: [ambience, ambienceMp3], loop: true })],
     });
-    sounds.set("creepy-sound", {
-      variants: [new Howl({ src: [creepy, creepyMp3] })],
-    });
+    //sounds.set("creepy-sound", {
+    //  variants: [new Howl({ src: [creepy, creepyMp3] })],
+    //});
     sounds.set("footstep", {
       variants: [
         new Howl({ src: [foot1, foot1Mp3] }),
@@ -53,6 +53,9 @@ export namespace Audio {
     });
     sounds.set("stone", {
       variants: [new Howl({ src: [stone, stoneMp3] })],
+    });
+    sounds.set("creepy-sound", {
+      variants: [new Howl({ src: [creepy, creepyMp3] })],
     });
 
     return { sounds, lastPlayedVariant: new Map() };

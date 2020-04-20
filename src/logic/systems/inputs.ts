@@ -22,6 +22,7 @@ export function handleInput(state: GameState, dt: number) {
       state.screen.t === "screen" &&
       state.screen.texture === state.renderState.titleScreen
     ) {
+      Audio.playSound(state.audioState, "creepy-sound");
       state.screen = {
         t: "transition",
         fromScreen: state.renderState.titleScreen,

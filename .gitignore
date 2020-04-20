@@ -2,3 +2,5 @@
 node_modules
 dist
 .cache
+phobos.zip
+yarn-error.log
