@@ -1,7 +1,7 @@
 import { GameState } from "~state/state";
 import { expect } from "~base/expect";
 import { Vec2 } from "~base/vec2";
-import { restartGame } from "~logic/init";
+import { restartGame, PLAY_AREA_SIZE } from "~logic/init";
 import { Audio } from "~audio/audio";
 
 export function handleInput(state: GameState, dt: number) {
@@ -101,7 +101,17 @@ export function handleInput(state: GameState, dt: number) {
     stepper.accum += movement;
     stepper.sneaking = state.inputs.sneak;
 
-    state.components.position.set(playerId, Vec2.add(pos, dPos));
+    const newPos = Vec2.add(pos, dPos);
+    if (
+      newPos.x < 0 ||
+      newPos.x > PLAY_AREA_SIZE.x ||
+      newPos.y < 0 ||
+      newPos.y > PLAY_AREA_SIZE.y
+    ) {
+      // Sorry, you can't move there
+    } else {
+      state.components.position.set(playerId, Vec2.add(pos, dPos));
+    }
   } else {
     const sprite = expect(state.components.sprite.get(playerId));
     sprite.frame = 0;

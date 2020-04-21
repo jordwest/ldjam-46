@@ -15,7 +15,7 @@ import { Angle } from "~base/angle";
 const NUM_CAMPS = 40;
 const NUM_STONES = 200;
 
-const PLAY_AREA_SIZE = {
+export const PLAY_AREA_SIZE = {
   x: 200,
   y: 200,
 };

@@ -76,11 +76,15 @@ export function runAi(state: GameState, dt: number) {
       brain.fear = 0.4;
       createDialogue(state, pos, "ahh");
 
+      state.stats.fearBar -= dt * 0.1;
+
       brain.state = { t: "investigating", lookingAt: { ...playerPos } };
       brain.sawPlayerAt = { ...playerPos };
     } else if (distanceToPlayer < 6 && playerVisibility > 0.5) {
       // Oh shit, that's a monster, RUN!
+      console.log("seen phobos at", playerVisibility, "visibility");
       brain.fear = Math.max(brain.fear, 0.7);
+      state.stats.fearBar -= playerVisibility * dt * 0.6;
       if (brain.state.t !== "running") {
         createDialogue(state, pos, "ahh");
       }
@@ -117,6 +121,12 @@ export function runAi(state: GameState, dt: number) {
       brain.targetAngle = Vec2.angleOf(vecToTarget);
       state.components.lightSource.set(entityId, "torch");
       if (distToTarget > 0.1) {
+        const fearMult = Math.min(brain.fear, 1.0);
+
+        // Walk faster as we get more scared
+        const speed =
+          agility.sneakSpeed +
+          (agility.runSpeed - agility.sneakSpeed) * fearMult;
         // Move towards thing
         deltaPos = Vec2.multScalar(vecToTarget, dt * agility.sneakSpeed);
       } else {

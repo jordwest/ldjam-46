@@ -3,6 +3,7 @@ import { Rect } from "~base/rect";
 import { SpriteProgram } from "~rendering/shaders/sprite/sprite";
 import { Coords } from "~base/coords";
 import { Vec2 } from "~base/vec2";
+import { PLAY_AREA_SIZE } from "~logic/init";
 
 export function renderGrass(state: GameState) {
   const screenWorldSize = Vec2.divScalar(state.virtualScreenSize, 16);
@@ -31,6 +32,11 @@ export function renderGrass(state: GameState) {
       if (pseudoRand < 3) {
         variant = pseudoRand;
       }
+
+      if (x < 0 || x > PLAY_AREA_SIZE.x || y < 0 || y > PLAY_AREA_SIZE.y) {
+        variant = 5;
+      }
+
       sprites.push({
         position: pos,
         tile: { x: 9, y: variant },
